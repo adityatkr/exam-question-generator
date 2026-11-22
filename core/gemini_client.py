@@ -17,6 +17,7 @@ That file is git-ignored and must never be committed.
 from __future__ import annotations
 
 import os
+import time
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -130,6 +131,8 @@ class GeminiResponse:
     model: str = config.MODEL_ID
     # Models that returned 503/429/404 before one succeeded, for diagnostics.
     fell_back_from: list[str] = field(default_factory=list)
+    # Rate-limit waits we sat through before this call succeeded.
+    rate_limit_waits: list[str] = field(default_factory=list)
 
     @property
     def estimated_cost_usd(self) -> float:
@@ -224,14 +227,28 @@ def call_gemini(
 
     candidates = [config.MODEL_ID, *config.FALLBACK_MODELS]
     overloaded: list[str] = []
+    waited: list[str] = []
     response = None
     used_model = config.MODEL_ID
 
     for index, model in enumerate(candidates):
         try:
-            response = _one_call(
-                client, model, system, user, max_tokens, json_mode, thinking
-            )
+            # A 429 on a free-tier key means "wait a moment", not "this model
+            # is unusable", so retry this same model before moving on.
+            for rl_attempt in range(config.RATE_LIMIT_RETRIES + 1):
+                try:
+                    response = _one_call(
+                        client, model, system, user, max_tokens,
+                        json_mode, thinking,
+                    )
+                    break
+                except genai_errors.ClientError as rl_exc:
+                    if getattr(rl_exc, "code", None) != 429:
+                        raise
+                    if rl_attempt == config.RATE_LIMIT_RETRIES:
+                        raise
+                    waited.append(f"{model} 429 x{rl_attempt + 1}")
+                    time.sleep(config.RATE_LIMIT_WAIT_S)
             used_model = model
             break
         except genai_errors.ServerError as exc:
@@ -252,7 +269,9 @@ def call_gemini(
                 if index == len(candidates) - 1:
                     raise GeminiError(
                         "Rate limited / quota exhausted on every configured "
-                        "model: " + ", ".join(overloaded) + ". Check your quota "
+                        "model after waiting: " + ", ".join(overloaded)
+                        + ". Free-tier keys have a low requests-per-minute "
+                        "limit -- wait a minute and retry, or check your quota "
                         "at https://aistudio.google.com."
                     ) from exc
                 continue
@@ -325,4 +344,5 @@ def call_gemini(
         thought_tokens=getattr(usage, "thoughts_token_count", 0) or 0,
         model=used_model,
         fell_back_from=overloaded,
+        rate_limit_waits=waited,
     )

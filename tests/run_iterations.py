@@ -567,6 +567,13 @@ def run_version(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--only", choices=["gen", "qc"], help="run one family")
+    parser.add_argument(
+        "--pace",
+        type=float,
+        default=15.0,
+        help="seconds to wait between versions, to stay inside the free-tier "
+        "requests-per-minute limit (default 15)",
+    )
     args = parser.parse_args()
 
     if not get_api_key():
@@ -581,14 +588,17 @@ def main() -> int:
         print("\n" + "=" * 70)
         print("GENERATOR PROMPT: v1 -> v4")
         print("=" * 70)
-        for name, change, system, user in GENERATOR_VERSIONS:
+        for i, (name, change, system, user) in enumerate(GENERATOR_VERSIONS):
+            if i:
+                time.sleep(args.pace)
             records.append(run_version(name, change, system, user, "generator"))
 
     if args.only != "gen":
         print("\n" + "=" * 70)
         print("QUALITY-CHECK PROMPT: v1 -> v4")
         print("=" * 70)
-        for name, change, system, user in QC_VERSIONS:
+        for i, (name, change, system, user) in enumerate(QC_VERSIONS):
+            time.sleep(args.pace)
             records.append(run_version(name, change, system, user, "quality"))
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)

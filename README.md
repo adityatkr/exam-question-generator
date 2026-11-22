@@ -267,7 +267,29 @@ python tests/run_iterations.py        # all 8 prompt versions against the API
 _Filled in from a real run — see [`tests/test_cases.md`](tests/test_cases.md)
 for the full table and `tests/output/results.json` for raw output._
 
-<!-- TEST_SUMMARY -->
+**16 / 16 test cases passed** on a real run against `gemini-3.6-flash`
+(472.9 s total; 30,160 input / 11,853 output tokens across the 7 API-backed
+cases, ~$0.07).
+
+| Group | Cases | Result |
+|---|---|---|
+| Invalid input (no API call made) | 1–8 | 8/8 blocked with a specific error, 0.0 s each |
+| Normal | 9–12 | 4/4 — including 20 questions at avg 9.5/10 |
+| Edge | 13–16 | 4/4 — gibberish refused, Hindi handled, conflicts caught |
+
+Three results worth highlighting:
+
+- **Case 15 (conflicting settings)** — True/False questions worth 10 marks at
+  Bloom's *Create*. The validator warned, the generator scaled the marks to 2,
+  and the quality checker scored all three **3.0/10 and flagged every one**. A
+  single-pass tool would have shipped them looking fine.
+- **Case 12 (20 questions)** — 5 questions flagged *as duplicates* despite
+  scoring 8.0, i.e. above the threshold. Duplicate detection, not scoring,
+  caught them.
+- **Case 13 (gibberish)** — generated **zero** questions and returned the
+  `unusable_source` refusal rather than inventing a topic.
+
+Full table, pass criteria and analysis: [`tests/test_cases.md`](tests/test_cases.md).
 
 ---
 

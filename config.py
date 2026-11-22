@@ -35,6 +35,13 @@ REQUEST_TIMEOUT_MS = 120_000
 # Transport-level retry attempts per model before we move to the next model.
 HTTP_RETRY_ATTEMPTS = 2
 
+# Free-tier keys have a low requests-per-minute limit, and a 429 there means
+# "wait", not "this model is broken" -- so we wait on the SAME model rather
+# than falling straight through to the fallback chain. Measured: the free-tier
+# RPM window recovers in well under a minute.
+RATE_LIMIT_RETRIES = 3
+RATE_LIMIT_WAIT_S = 20
+
 # --- Pricing (for the cost estimate in the diagnostics panel) ----------------
 # gemini-3.6-flash introductory rate, valid through 2026-12-31; rises to
 # 1.50 / 7.50 on 2027-01-01. Output price includes thinking tokens.
