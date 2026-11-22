@@ -152,7 +152,9 @@ def _validation_only(**kwargs: Any) -> dict[str, Any]:
 
 
 def _full_pipeline(
-    settings: Settings, quality: bool = True
+    settings: Settings,
+    quality: bool = True,
+    sample_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Generate, then optionally quality-check, exactly as the app does."""
     gen = generate_questions(settings)
@@ -187,14 +189,24 @@ def _full_pipeline(
         }
     )
     merged = quality_checker.merge(gen.questions, qc.reviews)
-    out["exports"] = {
-        "pdf_paper": len(exporter.to_pdf_question_paper(merged, settings)),
-        "pdf_key": len(exporter.to_pdf_answer_key(merged, settings)),
-        "docx_paper": len(exporter.to_docx_question_paper(merged, settings)),
-        "docx_key": len(exporter.to_docx_answer_key(merged, settings)),
-        "json": len(exporter.to_json(merged, settings)),
-        "csv": len(exporter.to_quality_csv(merged)),
+    artefacts = {
+        "question-paper.pdf": exporter.to_pdf_question_paper(merged, settings),
+        "answer-key.pdf": exporter.to_pdf_answer_key(merged, settings),
+        "question-paper.docx": exporter.to_docx_question_paper(merged, settings),
+        "answer-key.docx": exporter.to_docx_answer_key(merged, settings),
+        "paper.json": exporter.to_json(merged, settings, qc.set_level_notes),
+        "quality-report.csv": exporter.to_quality_csv(merged),
     }
+    out["exports"] = {name: len(data) for name, data in artefacts.items()}
+    # Keep the reviewed questions so the results file is real evidence, not
+    # just a summary, and so sample exports can be rebuilt without re-calling.
+    out["questions"] = merged
+    out["set_level_notes"] = qc.set_level_notes
+    if sample_dir is not None:
+        sample_dir.mkdir(parents=True, exist_ok=True)
+        for name, data in artefacts.items():
+            (sample_dir / name).write_bytes(data)
+        out["sample_dir"] = str(sample_dir)
     return out
 
 
@@ -306,7 +318,8 @@ def build_cases() -> list[Case]:
                     ],
                     difficulty="mixed",
                     bloom_level="Mixed",
-                )
+                ),
+                sample_dir=ROOT / "samples",
             ),
         ),
         Case(

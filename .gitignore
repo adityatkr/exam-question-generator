@@ -10,8 +10,14 @@ __pycache__/
 venv/
 env/
 
-# Test / run artefacts
-tests/output/
+# Test / run artefacts -- logs are noise, but the result files are the
+# evidence behind tests/test_cases.md and prompts/iteration_log.md, so they
+# are tracked deliberately.
+tests/output/*
+!tests/output/results.json
+!tests/output/results_table.md
+!tests/output/iterations.json
+samples/*.tmp
 exports/
 .pytest_cache/
 

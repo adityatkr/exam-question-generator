@@ -1,0 +1,538 @@
+[
+  {
+    "number": 1,
+    "name": "Empty input",
+    "kind": "invalid",
+    "description": "Topic/notes box left empty, everything else valid.",
+    "expected": "Blocked by validation with 'is empty'; no API call.",
+    "actual": "Blocked. Topic or notes is empty. Enter a topic, paste lecture notes, or upload a .txt/.pdf file.",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "blocked": true,
+      "errors": [
+        "Topic or notes is empty. Enter a topic, paste lecture notes, or upload a .txt/.pdf file."
+      ],
+      "warnings": []
+    }
+  },
+  {
+    "number": 2,
+    "name": "Whitespace-only input",
+    "kind": "invalid",
+    "description": "Topic/notes contains only spaces and newlines.",
+    "expected": "Blocked by validation; treated the same as empty.",
+    "actual": "Blocked. Topic or notes is empty. Enter a topic, paste lecture notes, or upload a .txt/.pdf file.",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "blocked": true,
+      "errors": [
+        "Topic or notes is empty. Enter a topic, paste lecture notes, or upload a .txt/.pdf file."
+      ],
+      "warnings": []
+    }
+  },
+  {
+    "number": 3,
+    "name": "Too few characters",
+    "kind": "invalid",
+    "description": "Source is 'CPU' (3 chars), below the 10-char floor.",
+    "expected": "Blocked with a 'too short' error naming the floor.",
+    "actual": "Blocked. Topic or notes is too short (3 characters). Give at least 10 characters.",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "blocked": true,
+      "errors": [
+        "Topic or notes is too short (3 characters). Give at least 10 characters."
+      ],
+      "warnings": []
+    }
+  },
+  {
+    "number": 4,
+    "name": "Zero questions",
+    "kind": "invalid",
+    "description": "num_questions = 0, below MIN_QUESTIONS.",
+    "expected": "Blocked with a range error (1-20).",
+    "actual": "Blocked. Number of questions must be between 1 and 20 (got 0).",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "blocked": true,
+      "errors": [
+        "Number of questions must be between 1 and 20 (got 0)."
+      ],
+      "warnings": []
+    }
+  },
+  {
+    "number": 5,
+    "name": "Too many questions",
+    "kind": "invalid",
+    "description": "num_questions = 25, above MAX_QUESTIONS.",
+    "expected": "Blocked with a range error (1-20).",
+    "actual": "Blocked. Number of questions must be between 1 and 20 (got 25).",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "blocked": true,
+      "errors": [
+        "Number of questions must be between 1 and 20 (got 25)."
+      ],
+      "warnings": []
+    }
+  },
+  {
+    "number": 6,
+    "name": "No question type selected",
+    "kind": "invalid",
+    "description": "question_types = [] (user cleared the multiselect).",
+    "expected": "Blocked with 'Select at least one question type'.",
+    "actual": "Blocked. Select at least one question type.",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "blocked": true,
+      "errors": [
+        "Select at least one question type."
+      ],
+      "warnings": []
+    }
+  },
+  {
+    "number": 7,
+    "name": "Very long notes",
+    "kind": "invalid",
+    "description": "~31,320 characters, over the 20,000 limit.",
+    "expected": "Blocked with a 'too long' error; no API call, no cost.",
+    "actual": "Blocked. Notes are too long (31,318 characters). The limit is 20,000. Trim the notes or split them into two papers.",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "blocked": true,
+      "errors": [
+        "Notes are too long (31,318 characters). The limit is 20,000. Trim the notes or split them into two papers."
+      ],
+      "warnings": []
+    }
+  },
+  {
+    "number": 8,
+    "name": "Unsupported file upload",
+    "kind": "invalid",
+    "description": "A .docx is dropped on the .txt/.pdf uploader.",
+    "expected": "Rejected with 'Unsupported file type'; empty text returned.",
+    "actual": "Rejected: Unsupported file type: notes.docx. Upload a .txt or .pdf.",
+    "passed": true,
+    "seconds": 0.0,
+    "detail": {
+      "text_len": 0,
+      "errors": [
+        "Unsupported file type: notes.docx. Upload a .txt or .pdf."
+      ]
+    }
+  },
+  {
+    "number": 9,
+    "name": "Single MCQ",
+    "kind": "normal",
+    "description": "1 question, MCQ, medium, Understand, 2 marks, OS notes.",
+    "expected": "Exactly 1 valid MCQ with 4 options and a quality score.",
+    "actual": "1 MCQ generated, quality 10.0/10, 0 flagged, exports OK",
+    "passed": true,
+    "seconds": 31.1,
+    "detail": {
+      "generated": 1,
+      "attempts": 1,
+      "repaired": false,
+      "unusable_source": false,
+      "errors": [],
+      "input_tokens": 3005,
+      "output_tokens": 401,
+      "types": [
+        "MCQ"
+      ],
+      "difficulties": [
+        "medium"
+      ],
+      "blooms": [
+        "Understand"
+      ],
+      "marks": [
+        2
+      ],
+      "first_question": "In Round Robin (RR) CPU scheduling, what is the consequence of setting the time quantum to an extremely small value?",
+      "qc_ok": true,
+      "qc_attempts": 1,
+      "qc_errors": [],
+      "average_score": 10.0,
+      "flagged": [],
+      "scores": [
+        10.0
+      ],
+      "exports": {
+        "pdf_paper": 2386,
+        "pdf_key": 2895,
+        "docx_paper": 37069,
+        "docx_key": 37342,
+        "json": 1834,
+        "csv": 360
+      }
+    }
+  },
+  {
+    "number": 10,
+    "name": "Five mixed-type questions",
+    "kind": "normal",
+    "description": "5 questions across all 4 types, mixed difficulty, Mixed Bloom.",
+    "expected": "5 questions spanning several types/difficulties; all reviewed.",
+    "actual": "5 questions, types ['Long Answer', 'MCQ', 'Short Answer', 'True/False'], difficulties ['easy', 'hard', 'medium'], avg 8.0/10",
+    "passed": true,
+    "seconds": 61.2,
+    "detail": {
+      "generated": 5,
+      "attempts": 1,
+      "repaired": false,
+      "unusable_source": false,
+      "errors": [],
+      "input_tokens": 3678,
+      "output_tokens": 1660,
+      "types": [
+        "Long Answer",
+        "MCQ",
+        "Short Answer",
+        "True/False"
+      ],
+      "difficulties": [
+        "easy",
+        "hard",
+        "medium"
+      ],
+      "blooms": [
+        "Analyze",
+        "Apply",
+        "Remember",
+        "Understand"
+      ],
+      "marks": [
+        2
+      ],
+      "first_question": "Which CPU scheduling algorithm gives the lowest average waiting time among non-preemptive algorithms?",
+      "qc_ok": true,
+      "qc_attempts": 1,
+      "qc_errors": [],
+      "average_score": 8.0,
+      "flagged": [
+        4,
+        5
+      ],
+      "scores": [
+        10.0,
+        10.0,
+        10.0,
+        5.0,
+        5.0
+      ],
+      "exports": {
+        "pdf_paper": 2728,
+        "pdf_key": 5265,
+        "docx_paper": 37288,
+        "docx_key": 38278,
+        "json": 6316,
+        "csv": 1418
+      }
+    }
+  },
+  {
+    "number": 11,
+    "name": "Topic only, no notes",
+    "kind": "normal",
+    "description": "A bare topic string instead of notes, DBMS, Apply, hard.",
+    "expected": "Valid questions generated from the topic alone.",
+    "actual": "3 Short Answer from topic only, Bloom ['Apply'], avg 10.0/10",
+    "passed": true,
+    "seconds": 130.0,
+    "detail": {
+      "generated": 3,
+      "attempts": 1,
+      "repaired": false,
+      "unusable_source": false,
+      "errors": [],
+      "input_tokens": 5252,
+      "output_tokens": 1277,
+      "types": [
+        "Short Answer"
+      ],
+      "difficulties": [
+        "hard"
+      ],
+      "blooms": [
+        "Apply"
+      ],
+      "marks": [
+        5
+      ],
+      "first_question": "A table `Orders` has the schema `Orders(OrderID, CustomerID, CustomerCity, OrderDate)`. The functional dependencies are: `OrderID -> CustomerID, OrderDate` and `CustomerID -> CustomerCity`. Identify the current normal form of the table, and convert it to 3NF by showing the resulting decomposed table schemas.",
+      "qc_ok": true,
+      "qc_attempts": 2,
+      "qc_errors": [],
+      "average_score": 10.0,
+      "flagged": [],
+      "scores": [
+        10.0,
+        10.0,
+        10.0
+      ],
+      "exports": {
+        "pdf_paper": 2692,
+        "pdf_key": 3706,
+        "docx_paper": 37276,
+        "docx_key": 37980,
+        "json": 4545,
+        "csv": 1259
+      }
+    }
+  },
+  {
+    "number": 12,
+    "name": "Maximum questions (20)",
+    "kind": "normal",
+    "description": "20 questions from the DBMS notes; the upper bound.",
+    "expected": "20 valid questions; duplicates, if any, flagged by the checker.",
+    "actual": "20 questions, avg 9.5/10, 5 flagged (6453 output tokens)",
+    "passed": true,
+    "seconds": 171.7,
+    "detail": {
+      "generated": 20,
+      "attempts": 1,
+      "repaired": false,
+      "unusable_source": false,
+      "errors": [],
+      "input_tokens": 10501,
+      "output_tokens": 6453,
+      "types": [
+        "MCQ",
+        "True/False"
+      ],
+      "difficulties": [
+        "easy",
+        "hard",
+        "medium"
+      ],
+      "blooms": [
+        "Analyze",
+        "Apply",
+        "Remember",
+        "Understand"
+      ],
+      "marks": [
+        1
+      ],
+      "first_question": "What is the primary requirement for a relation to be in First Normal Form (1NF)?",
+      "qc_ok": true,
+      "qc_attempts": 2,
+      "qc_errors": [],
+      "average_score": 9.5,
+      "flagged": [
+        2,
+        6,
+        12,
+        15,
+        20
+      ],
+      "scores": [
+        10.0,
+        8.0,
+        10.0,
+        10.0,
+        10.0,
+        8.0,
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        8.0,
+        10.0,
+        10.0,
+        8.0,
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+        8.0
+      ],
+      "exports": {
+        "pdf_paper": 5786,
+        "pdf_key": 10199,
+        "docx_paper": 38165,
+        "docx_key": 39627,
+        "json": 18979,
+        "csv": 3448
+      }
+    }
+  },
+  {
+    "number": 13,
+    "name": "Gibberish notes",
+    "kind": "edge",
+    "description": "Random consonant strings as the source material.",
+    "expected": "Model returns the unusable_source error object; no fake questions.",
+    "actual": "Refused: unusable_source: The source material contains only random characters and gibberish with no extractable Operati",
+    "passed": true,
+    "seconds": 11.1,
+    "detail": {
+      "generated": 0,
+      "attempts": 1,
+      "repaired": false,
+      "unusable_source": true,
+      "errors": [
+        "unusable_source: The source material contains only random characters and gibberish with no extractable Operating Systems content."
+      ],
+      "input_tokens": 1289,
+      "output_tokens": 33,
+      "types": [],
+      "difficulties": [],
+      "blooms": [],
+      "marks": [],
+      "first_question": ""
+    }
+  },
+  {
+    "number": 14,
+    "name": "Non-English notes (Hindi)",
+    "kind": "edge",
+    "description": "Hindi notes on photosynthesis; 3 MCQs.",
+    "expected": "Questions written in Hindi; JSON keys and enums stay English.",
+    "actual": "3 questions in Devanagari script, Bloom ['Remember'], avg 10.0/10",
+    "passed": true,
+    "seconds": 34.8,
+    "detail": {
+      "generated": 3,
+      "attempts": 1,
+      "repaired": false,
+      "unusable_source": false,
+      "errors": [],
+      "input_tokens": 3090,
+      "output_tokens": 896,
+      "types": [
+        "MCQ"
+      ],
+      "difficulties": [
+        "easy"
+      ],
+      "blooms": [
+        "Remember"
+      ],
+      "marks": [
+        2
+      ],
+      "first_question": "पौधों में प्रकाश संश्लेषण की क्रिया मुख्यतः किस अंगक में होती है?",
+      "qc_ok": true,
+      "qc_attempts": 1,
+      "qc_errors": [],
+      "average_score": 10.0,
+      "flagged": [],
+      "scores": [
+        10.0,
+        10.0,
+        10.0
+      ],
+      "exports": {
+        "pdf_paper": 2431,
+        "pdf_key": 2949,
+        "docx_paper": 37242,
+        "docx_key": 37663,
+        "json": 4290,
+        "csv": 826
+      }
+    }
+  },
+  {
+    "number": 15,
+    "name": "Conflicting settings",
+    "kind": "edge",
+    "description": "True/False questions worth 10 marks at Bloom's 'Create'.",
+    "expected": "Warned at validation; generated anyway with marks scaled down and/or a Bloom mismatch flagged by the checker.",
+    "actual": "Warned at validation; 3 produced with marks [2], avg 3.0/10, 3 flagged",
+    "passed": true,
+    "seconds": 33.0,
+    "detail": {
+      "validation": {
+        "blocked": false,
+        "errors": [],
+        "warnings": [
+          "10 marks for a True/False question is unusual; the generator will scale the marks down to a defensible value.",
+          "Bloom's level 'Create' is hard to assess with True/False only; the quality checker will likely flag a Bloom mismatch."
+        ]
+      },
+      "pipeline": {
+        "generated": 3,
+        "attempts": 1,
+        "repaired": false,
+        "unusable_source": false,
+        "errors": [],
+        "input_tokens": 3345,
+        "output_tokens": 1133,
+        "types": [
+          "True/False"
+        ],
+        "difficulties": [
+          "medium"
+        ],
+        "blooms": [
+          "Create"
+        ],
+        "marks": [
+          2
+        ],
+        "first_question": "True or False: If an operating system designer sets the time quantum in a Round Robin scheduling algorithm to an extremely large value, the system's scheduling behavior effectively transforms into a First-Come First-Served (FCFS) non-preemptive model.",
+        "qc_ok": true,
+        "qc_attempts": 1,
+        "qc_errors": [],
+        "average_score": 3.0,
+        "flagged": [
+          1,
+          2,
+          3
+        ],
+        "scores": [
+          3.0,
+          3.0,
+          3.0
+        ],
+        "exports": {
+          "pdf_paper": 2620,
+          "pdf_key": 3836,
+          "docx_paper": 37218,
+          "docx_key": 37960,
+          "json": 4395,
+          "csv": 1676
+        }
+      }
+    }
+  },
+  {
+    "number": 16,
+    "name": "Malformed model JSON (parser unit test)",
+    "kind": "edge",
+    "description": "Three bad payloads fed straight to the parser/validator: prose wrapper, truncated JSON, MCQ answer absent from options.",
+    "expected": "Each rejected with a specific error, which is what triggers the one retry in the live path.",
+    "actual": "Prose+fence recovered; truncated JSON raised ValueError; bad MCQ answer rejected",
+    "passed": [
+      "Question 1 is an MCQ whose answer is not one of its options."
+    ],
+    "seconds": 0.0,
+    "detail": {
+      "prose_wrapped": {
+        "questions": []
+      },
+      "truncated": "ValueError: No JSON object found in the model response.",
+      "answer_not_in_options": [
+        "Question 1 is an MCQ whose answer is not one of its options."
+      ]
+    }
+  }
+]
