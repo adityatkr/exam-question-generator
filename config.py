@@ -8,10 +8,20 @@ changed in exactly one place.
 # Change this single constant to swap models.
 #
 # Chosen on 2026-11-22 by listing the models available to our key
-# (client.models.list()) and calling each candidate. gemini-3.8-flash and
-# gemini-3.7-flash both returned 503 UNAVAILABLE ("high demand") at the time,
-# so the newest Flash model that actually served is 3.6.
-MODEL_ID = "gemini-3.6-flash"
+# (client.models.list()) and calling each candidate.
+#
+# Two separate constraints decided this, both measured, not assumed:
+#   * Capacity: gemini-3.8-flash and gemini-3.7-flash returned 503 UNAVAILABLE
+#     ("high demand") on every attempt.
+#   * Daily quota: the free tier allows only 20 generateContent requests per
+#     day PER MODEL (quotaId GenerateRequestsPerDayPerProjectPerModel-FreeTier).
+#     Building and testing this project exhausted 3.6-flash and 3.5-flash.
+#
+# gemini-3.5-flash-lite had capacity and quota, so it is the default: a demo
+# that runs beats a marginally better model that 429s. The fallback chain below
+# is ordered newest-first, so the app upgrades itself automatically as capacity
+# and quota free up (quota resets ~15h after exhaustion).
+MODEL_ID = "gemini-3.5-flash-lite"
 
 # Tried in order if MODEL_ID returns 503 UNAVAILABLE / 429. Newer Flash models
 # are listed first so the app upgrades itself automatically once demand on them
@@ -19,6 +29,7 @@ MODEL_ID = "gemini-3.6-flash"
 FALLBACK_MODELS = [
     "gemini-3.8-flash",
     "gemini-3.7-flash",
+    "gemini-3.6-flash",
     "gemini-3.5-flash",
 ]
 

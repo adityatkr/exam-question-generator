@@ -1,0 +1,388 @@
+[
+  {
+    "version": "gen-v1",
+    "kind": "generator",
+    "change": "bare instruction, no role, no format",
+    "system_prompt": "",
+    "user_prompt": "Make 4 exam questions about Operating Systems from these notes.\n\nCPU Scheduling. The short-term scheduler selects a process from the ready\nqueue and allocates the CPU to it. First-Come First-Served (FCFS) is\nnon-preemptive and suffers from the convoy effect, where short processes wait\nbehind one long process. Shortest Job First (SJF) gives the lowest average\nwaiting time of any non-preemptive algorithm but requires knowing the next CPU\nburst length, which is not available in practice. Round Robin (RR) is\npreemptive and assigns each process a fixed time quantum; if the quantum is\ntoo large RR degenerates to FCFS, and if it is too small the context-switch\noverhead dominates. Priority scheduling can cause starvation of low-priority\nprocesses, which is solved by ageing: gradually increasing the priority of\nprocesses that wait a long time.",
+    "system_chars": 0,
+    "user_chars": 846,
+    "raw_reply": "Based on your notes, here are 4 exam questions about Operating Systems:\n\n**Question 1 (Multiple Choice)**\nWhich CPU scheduling algorithm is strictly non-preemptive, but suffers from the \"convoy effect\" where short processes are delayed behind a single long process?\nA) Round Robin (RR)\nB) Shortest Job First (SJF)\nC) First-Come First-Served (FCFS)\nD) Priority Scheduling\n\n**Question 2 (Short Answer)**\nWhat is the primary theoretical advantage of the Shortest Job First (SJF) scheduling algorithm, and what is the major practical limitation that prevents its direct implementation in standard operating systems?\n\n**Question 3 (True/False)**\n*True or False:* In Round Robin scheduling, if the time quantum is made excessively small, the system performance improves because response time approaches zero without any negative side effects. Explain briefly.\n\n**Question 4 (Fill-in-the-Blank / Concept)**\nIn Priority Scheduling, low-priority processes may suffer from indefinite blocking, a phenomenon known as __________. This issue is typically resolved using a technique called __________, which gradually increases the priority of waiting processes.",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 194,
+    "output_tokens": 244,
+    "seconds": 6.3,
+    "metrics": {
+      "reply_chars": 1148,
+      "has_code_fence": false,
+      "starts_with_brace": false,
+      "prose_before_json": true,
+      "parsed": false,
+      "parse_error": "No JSON object found in the model response.",
+      "valid": false
+    }
+  },
+  {
+    "version": "gen-v2",
+    "kind": "generator",
+    "change": "+ role, + 'return JSON' in prose",
+    "system_prompt": "You are a university professor who sets exam papers.",
+    "user_prompt": "Create 4 multiple-choice exam questions on Operating Systems\nfrom the notes below. Difficulty: medium. Marks each: 2.\n\nNotes:\nCPU Scheduling. The short-term scheduler selects a process from the ready\nqueue and allocates the CPU to it. First-Come First-Served (FCFS) is\nnon-preemptive and suffers from the convoy effect, where short processes wait\nbehind one long process. Shortest Job First (SJF) gives the lowest average\nwaiting time of any non-preemptive algorithm but requires knowing the next CPU\nburst length, which is not available in practice. Round Robin (RR) is\npreemptive and assigns each process a fixed time quantum; if the quantum is\ntoo large RR degenerates to FCFS, and if it is too small the context-switch\noverhead dominates. Priority scheduling can cause starvation of low-priority\nprocesses, which is solved by ageing: gradually increasing the priority of\nprocesses that wait a long time.\n\nReturn the result as JSON with a \"questions\" list. Each question should have\nthe question text, four options, the correct answer, an explanation, the\ndifficulty, the Bloom's taxonomy level and the marks.",
+    "system_chars": 52,
+    "user_chars": 1112,
+    "raw_reply": "```json\n{\n  \"questions\": [\n    {\n      \"question text\": \"Which CPU scheduling algorithm is inherently non-preemptive and is known to suffer from the convoy effect?\",\n      \"options\": [\n        \"A) Round Robin (RR)\",\n        \"B) Shortest Job First (SJF)\",\n        \"C) First-Come First-Served (FCFS)\",\n        \"D) Priority Scheduling with ageing\"\n      ],\n      \"correct answer\": \"C\",\n      \"explanation\": \"First-Come First-Served (FCFS) is a non-preemptive scheduling algorithm that suffers from the convoy effect, where shorter processes are forced to wait behind a single long CPU-bound process.\",\n      \"difficulty\": \"medium\",\n      \"Bloom's taxonomy level\": \"Comprehension\",\n      \"marks\": 2\n    },\n    {\n      \"question text\": \"What is the primary practical limitation of the Shortest Job First (SJF) scheduling algorithm in a standard operating system?\",\n      \"options\": [\n        \"A) It has the highest average waiting time of all scheduling algorithms.\",\n        \"B) It is strictly preemptive, leading to excessive context switches.\",\n        \"C) It requires knowing the length of the next CPU burst in advance, which is generally impossible.\",\n        \"D) It inevitably leads to the starvation of high-priority processes.\"\n      ],\n      \"correct answer\": \"C\",\n      \"explanation\": \"While SJF provides the lowest average waiting time for non-preemptive algorithms, it cannot be easily implemented in practice because the exact length of the next CPU burst is not known beforehand.\",\n      \"difficulty\": \"medium\",\n      \"Bloom's taxonomy level\": \"Analysis\",\n      \"marks\": 2\n    },\n    {\n      \"question text\": \"In Round Robin (RR) scheduling, what adverse effect occurs if the chosen time quantum is set to be excessively small?\",\n      \"options\": [\n        \"A) The algorithm degenerates into First-Come First-Served (FCFS).\",\n        \"B) The context-switch overhead begins to dominate system performance.\",\n        \"C) All processes immediately experience indefinite starvation.\",\n        \"D) The average waiting time drops to zero.\"\n      ],\n      \"correct answer\": \"B\",\n      \"explanation\": \"If the time quantum in Round Robin scheduling is too small, the overhead associated with frequent context switches becomes a dominant factor, wasting valuable CPU cycles.\",\n      \"difficulty\": \"medium\",\n      \"Bloom's taxonomy level\": \"Comprehension\",\n      \"marks\": 2\n    },\n    {\n      \"question text\": \"Which technique is specifically used in Priority Scheduling to prevent the indefinite blocking (starvation) of low-priority processes?\",\n      \"options\": [\n        \"A) Convoy effect mitigation\",\n        \"B) Time quantum adjustment\",\n        \"C) Ageing\",\n        \"D) Burst-length estimation\"\n      ],\n      \"correct answer\": \"C\",\n      \"explanation\": \"Ageing is a technique used in priority scheduling where the priority of a process is gradually increased the longer it waits in the ready queue, effectively preventing starvation.\",\n      \"difficulty\": \"medium\",\n      \"Bloom's taxonomy level\": \"Knowledge\",\n      \"marks\": 2\n    }\n  ]\n}\n```",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 262,
+    "output_tokens": 727,
+    "seconds": 5.5,
+    "metrics": {
+      "reply_chars": 3050,
+      "has_code_fence": true,
+      "starts_with_brace": false,
+      "prose_before_json": false,
+      "parsed": true,
+      "validator_errors": [
+        "Question 1 is missing field(s): question, type, answer, bloom_level.",
+        "Question 2 is missing field(s): question, type, answer, bloom_level.",
+        "Question 3 is missing field(s): question, type, answer, bloom_level.",
+        "Question 4 is missing field(s): question, type, answer, bloom_level."
+      ],
+      "valid": false,
+      "question_count": 4,
+      "first_question_keys": [
+        "Bloom's taxonomy level",
+        "correct answer",
+        "difficulty",
+        "explanation",
+        "marks",
+        "options",
+        "question text"
+      ],
+      "missing_schema_fields": [
+        "answer",
+        "bloom_level",
+        "id",
+        "question",
+        "type"
+      ],
+      "option_counts": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "answer_in_options": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "bloom_labels": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "marks_values": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "banned_option_phrases": []
+    }
+  },
+  {
+    "version": "gen-v3",
+    "kind": "generator",
+    "change": "+ explicit schema, enums, output contract, MCQ constraints",
+    "system_prompt": "You are an experienced university examination setter.\nYou write exam questions that are ready to print.\n\nRules:\n- Every MCQ has exactly one correct option and three plausible wrong options.\n- Never use \"all of the above\" or \"both A and B\".\n- The answer must be the full text of the correct option.\n- Do not invent facts that are not in the source material.\n\nReply with a single JSON object and nothing else. No prose, no markdown code\nfences.",
+    "user_prompt": "Generate exam questions from the material below.\n\n<source_material subject=\"Operating Systems\">\nCPU Scheduling. The short-term scheduler selects a process from the ready\nqueue and allocates the CPU to it. First-Come First-Served (FCFS) is\nnon-preemptive and suffers from the convoy effect, where short processes wait\nbehind one long process. Shortest Job First (SJF) gives the lowest average\nwaiting time of any non-preemptive algorithm but requires knowing the next CPU\nburst length, which is not available in practice. Round Robin (RR) is\npreemptive and assigns each process a fixed time quantum; if the quantum is\ntoo large RR degenerates to FCFS, and if it is too small the context-switch\noverhead dominates. Priority scheduling can cause starvation of low-priority\nprocesses, which is solved by ageing: gradually increasing the priority of\nprocesses that wait a long time.\n</source_material>\n\nSpecification:\n- Number of questions: exactly 4\n- Question types allowed: MCQ\n- Difficulty: medium\n- Bloom's taxonomy level: Apply\n- Marks per question: 2\n\nRequired JSON shape:\n\n{\n  \"questions\": [\n    {\n      \"id\": 1,\n      \"question\": \"string\",\n      \"type\": \"MCQ | Short Answer | Long Answer | True/False\",\n      \"options\": [\"string\", \"string\", \"string\", \"string\"],\n      \"answer\": \"string - verbatim text of the correct option\",\n      \"explanation\": \"string\",\n      \"difficulty\": \"easy | medium | hard\",\n      \"bloom_level\": \"Remember | Understand | Apply | Analyze | Evaluate | Create\",\n      \"marks\": 0\n    }\n  ]\n}\n\nReturn the JSON object now.",
+    "system_chars": 442,
+    "user_chars": 1546,
+    "raw_reply": "{\n  \"questions\": [\n    {\n      \"id\": 1,\n      \"question\": \"An operating system designer is implementing a non-preemptive scheduling algorithm that theoretically achieves the lowest average waiting time, but realizes that the required CPU burst lengths are unknown in practice. Which algorithm is being considered?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"First-Come First-Served (FCFS)\",\n        \"Shortest Job First (SJF)\",\n        \"Round Robin (RR)\",\n        \"Priority scheduling\"\n      ],\n      \"answer\": \"Shortest Job First (SJF)\",\n      \"explanation\": \"Shortest Job First (SJF) gives the lowest average waiting time of any non-preemptive algorithm but requires knowing the next CPU burst length, which is not available in practice.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    },\n    {\n      \"id\": 2,\n      \"question\": \"A system administrator notices that short processes in a batch system are experiencing massive delays because they are queued behind a single long CPU-bound process. Which scheduling characteristic is causing this behavior?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"The convoy effect in First-Come First-Served (FCFS) scheduling\",\n        \"Excessive context-switch overhead in Round Robin scheduling\",\n        \"Starvation due to strict Priority scheduling\",\n        \"Aging effects in preemptive job allocation\"\n      ],\n      \"answer\": \"The convoy effect in First-Come First-Served (FCFS) scheduling\",\n      \"explanation\": \"First-Come First-Served (FCFS) is non-preemptive and suffers from the convoy effect, where short processes wait behind one long process.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    },\n    {\n      \"id\": 3,\n      \"question\": \"An engineer configuring a Round Robin scheduler sets the time quantum to an extremely small value. What primary performance issue is this configuration likely to trigger?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"The convoy effect will dominate the queue.\",\n        \"The scheduler will degenerate into First-Come First-Served (FCFS).\",\n        \"The context-switch overhead will dominate.\",\n        \"Low-priority processes will experience permanent starvation.\"\n      ],\n      \"answer\": \"The context-switch overhead will dominate.\",\n      \"explanation\": \"If the quantum is too small the context-switch overhead dominates, whereas if it is too large RR degenerates to FCFS.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    },\n    {\n      \"id\": 4,\n      \"question\": \"A system using priority scheduling experiences an issue where low-priority processes are indefinitely blocked from execution. To resolve this, the system is modified to gradually increase the priority of processes that wait for a long time. What is this corrective technique called?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"Convoy reduction\",\n        \"Quantum scaling\",\n        \"Burst estimation\",\n        \"Ageing\"\n      ],\n      \"answer\": \"Ageing\",\n      \"explanation\": \"Priority scheduling can cause starvation of low-priority processes, which is solved by ageing: gradually increasing the priority of processes that wait a long time.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    }\n  ]\n}",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 489,
+    "output_tokens": 795,
+    "seconds": 5.0,
+    "metrics": {
+      "reply_chars": 3312,
+      "has_code_fence": false,
+      "starts_with_brace": true,
+      "prose_before_json": false,
+      "parsed": true,
+      "validator_errors": [],
+      "valid": true,
+      "question_count": 4,
+      "first_question_keys": [
+        "answer",
+        "bloom_level",
+        "difficulty",
+        "explanation",
+        "id",
+        "marks",
+        "options",
+        "question",
+        "type"
+      ],
+      "missing_schema_fields": [],
+      "option_counts": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "answer_in_options": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "bloom_labels": [
+        "Apply",
+        "Apply",
+        "Apply",
+        "Apply"
+      ],
+      "marks_values": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "banned_option_phrases": []
+    }
+  },
+  {
+    "version": "gen-v4",
+    "kind": "generator",
+    "change": "FINAL: + grounding/Bloom/marks/duplicate/language rules, + unusable-source escape hatch",
+    "system_prompt": "You are an experienced university examination setter and subject-matter expert.\nYou have written and moderated end-semester question papers for an accredited\nengineering university for fifteen years. You know how a question paper is\naudited: every question must be answerable from the prescribed material, the\nanswer key must be defensible to a moderation committee, and the marks must\nmatch the cognitive demand.\n\n## What you do\n\nGiven a topic or a block of source material, you produce exam questions that\nare ready to print - not drafts, not suggestions.\n\n## Non-negotiable rules\n\n1. **Ground every question in the source.** If source material is supplied,\n   each question must be answerable using only that material plus standard\n   background knowledge for the subject. Never invent facts, figures, authors,\n   standards or numbers that are not in the source and not common textbook\n   knowledge.\n2. **One defensible answer.** Every MCQ must have exactly one correct option\n   and three clearly wrong but plausible distractors. No \"all of the above\",\n   no \"both A and B\", no two options that are arguably correct, no option that\n   is wrong only on a technicality.\n3. **Answer the question you asked.** The `answer` field must actually answer\n   the question as worded. For MCQ, `answer` must be the full text of the\n   correct option and must appear verbatim in `options`.\n4. **Respect the requested cognitive level.** A \"Remember\" question asks for\n   recall. An \"Apply\" question requires the student to use the concept on a new\n   case. An \"Analyze\" or \"Evaluate\" question requires the student to compare,\n   justify or critique. Do not label a recall question as \"Apply\".\n5. **Match marks to effort.** A 1-2 mark question is answerable in a sentence.\n   A 10+ mark question needs multiple parts or sustained argument. If the marks\n   look wrong for the type, still honour the request but scale the scope of the\n   question to fit.\n6. **No duplicates and no near-duplicates.** Two questions that test the same\n   fact in different words count as duplicates. Spread coverage across the\n   source material.\n7. **Self-contained.** Never write \"according to the passage above\", \"as\n   discussed in class\", or \"in the given figure\". The student sees only the\n   question.\n8. **Language.** Write questions in the same language as the source material.\n   If the source is not in English, keep the JSON keys and the enum values\n   (`type`, `difficulty`, `bloom_level`) in English but write `question`,\n   `options`, `answer` and `explanation` in the source language.\n\n## Refusing impossible requests\n\nIf the source material is empty, pure gibberish, or carries no extractable\nsubject content, do **not** invent a topic. Return the error object described in\nthe user message instead.\n\n## Output contract\n\nReply with a single JSON object and nothing else. No prose before it, no prose\nafter it, no markdown code fences, no comments inside the JSON. The first\ncharacter of your reply must be `{` and the last must be `}`.",
+    "user_prompt": "Generate exam questions from the material below.\n\n<source_material subject=\"Operating Systems\" kind=\"notes\">\nCPU Scheduling. The short-term scheduler selects a process from the ready\nqueue and allocates the CPU to it. First-Come First-Served (FCFS) is\nnon-preemptive and suffers from the convoy effect, where short processes wait\nbehind one long process. Shortest Job First (SJF) gives the lowest average\nwaiting time of any non-preemptive algorithm but requires knowing the next CPU\nburst length, which is not available in practice. Round Robin (RR) is\npreemptive and assigns each process a fixed time quantum; if the quantum is\ntoo large RR degenerates to FCFS, and if it is too small the context-switch\noverhead dominates. Priority scheduling can cause starvation of low-priority\nprocesses, which is solved by ageing: gradually increasing the priority of\nprocesses that wait a long time.\n</source_material>\n\n## Paper specification\n\n- Subject: Operating Systems\n- Number of questions: exactly 4\n- Question types allowed: MCQ\n- Difficulty: medium\n- Bloom's taxonomy level: Apply\n- Marks per question: 2\n\n### How to apply the specification\n\n- Produce **exactly 4** question objects. Not more, not fewer.\n- Use only the allowed types. If several types are allowed, distribute them as\n  evenly as the count permits (e.g. 5 questions and 2 allowed types -> 3 + 2).\n- If difficulty is `mixed`, spread questions across easy / medium / hard and\n  report the true per-question difficulty in each object.\n- If Bloom level is `Mixed`, choose a suitable level per question and report it.\n- Set `marks` to 2 on every question unless the type makes that\n  indefensible (for example a True/False worth 10 marks) - in that case use the\n  nearest defensible value and say so in `explanation`.\n- `options` is a list of exactly 4 strings for MCQ, exactly\n  `[\"True\", \"False\"]` for True/False, and `[]` for Short Answer and Long Answer.\n- `explanation` is the model answer or marking note for the evaluator: why the\n  answer is correct, and for MCQ why the distractors are wrong. 1-3 sentences.\n\n## Required JSON shape\n\n{\n  \"questions\": [\n    {\n      \"id\": 1,\n      \"question\": \"string - the question as the student will read it\",\n      \"type\": \"MCQ | Short Answer | Long Answer | True/False\",\n      \"options\": [\"string\", \"string\", \"string\", \"string\"],\n      \"answer\": \"string - for MCQ, verbatim text of the correct option\",\n      \"explanation\": \"string - model answer / marking note\",\n      \"difficulty\": \"easy | medium | hard\",\n      \"bloom_level\": \"Remember | Understand | Apply | Analyze | Evaluate | Create\",\n      \"marks\": 0\n    }\n  ]\n}\n\n`id` starts at 1 and increments by 1.\n\n## If the material is unusable\n\nIf the material is empty, gibberish, or contains no teachable subject content,\nreturn exactly this instead and nothing else:\n\n{\"error\": \"unusable_source\", \"reason\": \"one short sentence explaining why\"}\n\nReturn the JSON object now.",
+    "system_chars": 3020,
+    "user_chars": 2928,
+    "raw_reply": "{\n  \"questions\": [\n    {\n      \"id\": 1,\n      \"question\": \"An operating system designer is implementing a non-preemptive CPU scheduling algorithm and wants to achieve the lowest possible average waiting time. Which algorithm should they choose, and what practical limitation must they overcome?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"First-Come First-Served (FCFS); it suffers from the convoy effect.\",\n        \"Shortest Job First (SJF); it requires knowing the next CPU burst length in advance, which is not available in practice.\",\n        \"Round Robin (RR); it suffers from excessive context-switch overhead if the time quantum is too small.\",\n        \"Priority Scheduling; it causes starvation of low-priority processes which requires ageing.\"\n      ],\n      \"answer\": \"Shortest Job First (SJF); it requires knowing the next CPU burst length in advance, which is not available in practice.\",\n      \"explanation\": \"SJF gives the lowest average waiting time of any non-preemptive algorithm, but its main practical drawback is that the length of the next CPU burst is generally unknown.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    },\n    {\n      \"id\": 2,\n      \"question\": \"A systems engineer is configuring a Round Robin scheduler for a real-time system. If they set the time quantum to be extremely large compared to the average CPU burst of the processes, how will the scheduler behave?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"It will degenerate into First-Come First-Served (FCFS) scheduling.\",\n        \"It will cause extreme starvation of low-priority tasks.\",\n        \"It will cause context-switch overhead to dominate system performance.\",\n        \"It will automatically shift to Shortest Job First scheduling.\"\n      ],\n      \"answer\": \"It will degenerate into First-Come First-Served (FCFS) scheduling.\",\n      \"explanation\": \"When the time quantum is made too large in Round Robin, processes finish their CPU bursts before the quantum expires, causing the algorithm to behave like FCFS.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    },\n    {\n      \"id\": 3,\n      \"question\": \"A batch processing system uses a non-preemptive scheduling policy where a single compute-intensive job blocks several short I/O-bound jobs in the ready queue. Which phenomenon is occurring in this scenario?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"Context-switch overhead domination\",\n        \"Process ageing\",\n        \"The convoy effect\",\n        \"Starvation due to high priority locking\"\n      ],\n      \"answer\": \"The convoy effect\",\n      \"explanation\": \"The convoy effect happens in FCFS scheduling when short processes are forced to wait behind one long process, leading to poor CPU and device utilization.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    },\n    {\n      \"id\": 4,\n      \"question\": \"An operating system uses a priority scheduling algorithm that causes low-priority processes to wait indefinitely in the ready queue. To resolve this issue, an engineer implements a mechanism that gradually increases the priority of processes the longer they wait. What is this mechanism called?\",\n      \"type\": \"MCQ\",\n      \"options\": [\n        \"Quantum scaling\",\n        \"Ageing\",\n        \"Burst estimation\",\n        \"Convoy mitigation\"\n      ],\n      \"answer\": \"Ageing\",\n      \"explanation\": \"Ageing is a technique used to prevent starvation by incrementally boosting the priority of a process as it spends more time waiting in the system.\",\n      \"difficulty\": \"medium\",\n      \"bloom_level\": \"Apply\",\n      \"marks\": 2\n    }\n  ]\n}",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 1429,
+    "output_tokens": 866,
+    "seconds": 8.1,
+    "metrics": {
+      "reply_chars": 3666,
+      "has_code_fence": false,
+      "starts_with_brace": true,
+      "prose_before_json": false,
+      "parsed": true,
+      "validator_errors": [],
+      "valid": true,
+      "question_count": 4,
+      "first_question_keys": [
+        "answer",
+        "bloom_level",
+        "difficulty",
+        "explanation",
+        "id",
+        "marks",
+        "options",
+        "question",
+        "type"
+      ],
+      "missing_schema_fields": [],
+      "option_counts": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "answer_in_options": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "bloom_labels": [
+        "Apply",
+        "Apply",
+        "Apply",
+        "Apply"
+      ],
+      "marks_values": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "banned_option_phrases": []
+    }
+  },
+  {
+    "version": "qc-v1",
+    "kind": "quality",
+    "change": "vague ask, no scale, no criteria, no format",
+    "system_prompt": "",
+    "user_prompt": "Check these exam questions and tell me if they are good.\n\n[\n  {\n    \"id\": 1,\n    \"question\": \"Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"First-Come First-Served\",\n      \"Round Robin\",\n      \"Priority with ageing\",\n      \"Multilevel queue\"\n    ],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"FCFS is non-preemptive and short processes queue behind one long process.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 2,\n    \"question\": \"Which statement about Round Robin scheduling is true?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"A very large time quantum makes it behave like FCFS\",\n      \"A very small time quantum raises context-switch overhead\",\n      \"It is a preemptive algorithm\",\n      \"It requires knowing the next CPU burst length\"\n    ],\n    \"answer\": \"A very large time quantum makes it behave like FCFS\",\n    \"explanation\": \"If the quantum exceeds the longest burst, RR degenerates to FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 3,\n    \"question\": \"What does the abbreviation SJF stand for?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"Shortest Job First\",\n    \"explanation\": \"SJF is Shortest Job First.\",\n    \"difficulty\": \"easy\",\n    \"bloom_level\": \"Apply\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 4,\n    \"question\": \"Name the scheduling algorithm in which a long process delays the short processes queued behind it.\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"This is the convoy effect under FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 5,\n    \"question\": \"Which problem does the technique of ageing solve in priority scheduling?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"The convoy effect\",\n      \"Starvation\",\n      \"Thrashing\",\n      \"Deadlock\"\n    ],\n    \"answer\": \"The convoy effect\",\n    \"explanation\": \"Ageing raises the priority of long-waiting processes.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 6,\n    \"question\": \"In a multilevel feedback queue, what happens to a process that exhausts its time quantum at the highest-priority level?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"It is demoted to the next lower-priority queue.\",\n    \"explanation\": \"MLFQ demotes CPU-bound processes to lower queues.\",\n    \"difficulty\": \"hard\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  }\n]",
+    "system_chars": 0,
+    "user_chars": 2635,
+    "raw_reply": "Overall, this is a **solid set of exam questions** for an introductory Operating Systems course covering CPU scheduling. They are well-structured, have clear metadata, and target fundamental concepts. \n\nHowever, there are a few **factual errors, inconsistencies, and pedagogical issues** that you should fix before using them in a real exam. \n\nHere is a detailed breakdown of the pros, issues, and suggested corrections:\n\n---\n\n### 🔴 Critical Issues to Fix\n\n#### 1. Question 2 has multiple correct answers (MCQ flaw)\n* **The Question:** *\"Which statement about Round Robin scheduling is true?\"*\n* **The Issue:** The options include:\n  * *\"A very large time quantum makes it behave like FCFS\"* (Marked as the answer)\n  * *\"A very small time quantum raises context-switch overhead\"* (Also **scientifically true**)\n  * *\"It is a preemptive algorithm\"* (Also **scientifically true**)\n* **Fix:** Either change the question to *\"Which of the following statements is **false**?\"* or make it a \"Multiple True/False\" style question. Alternatively, change it to a \"Select all that apply\" format.\n\n#### 2. Question 5 has a direct contradiction in the explanation\n* **The Question:** *\"Which problem does the technique of ageing solve in priority scheduling?\"*\n* **The Answer Key:** Starvation\n* **The Explanation in JSON:** *\"Ageing raises the priority of long-waiting processes to solve the **convoy effect**.\"*\n* **The Issue:** Ageing solves **Starvation** (indefinite blocking), *not* the convoy effect (which is caused by FCFS). The explanation contradicts the correct answer.\n* **Fix:** Update the explanation to: *\"Ageing gradually increases the priority of processes that wait in the system for a long time, preventing starvation.\"*\n\n#### 3. Question 3 Bloom's Level Mismatch\n* **The Question:** *\"What does the abbreviation SJF stand for?\"*\n* **Listed Bloom's Level:** `Apply`\n* **The Issue:** Asking for an acronym is pure memorization/recall. \n* **Fix:** Change the Bloom's level to **`Remember`**.\n\n---\n\n### 🟡 Minor Improvements & Suggestions\n\n* **Question 4 vs. Question 1:** Question 4 asks for the exact same concept (\"long process delays short processes\") as Question 1 (convoy effect / FCFS), just phrased as a short answer. Having duplicates in a short exam makes the assessment less comprehensive. Consider replacing Question 4 with a question on *throughput*, *turnaround time*, or *response time*.\n* **JSON Schema consistency:** Short answer questions include an empty `\"options\": []` array. This is fine for database handling, but make sure your frontend/parser expects it.\n\n---\n\n### Revised JSON (With Fixes Applied)\n\nIf you want a ready-to-use corrected version, here is the polished JSON:\n\n```json\n[\n  {\n    \"id\": 1,\n    \"question\": \"Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"First-Come First-Served\",\n      \"Round Robin\",\n      \"Priority with ageing\",\n      \"Multilevel queue\"\n    ],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"FCFS is non-preemptive and short processes queue behind one long process.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 2,\n    \"question\": \"Which of the following statements about Round Robin scheduling is FALSE?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"A very large time quantum makes it behave like FCFS\",\n      \"A very small time quantum decreases context-switch overhead\",\n      \"It is a preemptive algorithm\",\n      \"It can cause higher average turnaround time than SJF\"\n    ],\n    \"answer\": \"A very small time quantum decreases context-switch overhead\",\n    \"explanation\": \"A very small time quantum actually increases context-switch overhead because the CPU spends too much time switching between processes.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 3,\n    \"question\": \"What does the abbreviation SJF stand for?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"Shortest Job First\",\n    \"explanation\": \"SJF stands for Shortest Job First.\",\n    \"difficulty\": \"easy\",\n    \"bloom_level\": \"Remember\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 4,\n    \"question\": \"Briefly define what 'turnaround time' means in CPU scheduling.\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"The interval from the time of submission of a process to the time of completion.\",\n    \"explanation\": \"Turnaround time is the total time taken to execute a process, including waiting time and burst time.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 5,\n    \"question\": \"Which problem does the technique of ageing solve in priority scheduling?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"The convoy effect\",\n      \"Starvation\",\n      \"Thrashing\",\n      \"Deadlock\"\n    ],\n    \"answer\": \"Starvation\",\n    \"explanation\": \"Ageing gradually increases the priority of processes that wait for a long time, ensuring they eventually get CPU time and preventing starvation.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 6,\n    \"question\": \"In a multilevel feedback queue, what happens to a process that exhausts its time quantum at the highest-priority level?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"It is demoted to the next lower-priority queue.\",\n    \"explanation\": \"MLFQ demotes CPU-bound processes to lower queues to favor I/O-bound and interactive processes.\",\n    \"difficulty\": \"hard\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  }\n]\n```",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 779,
+    "output_tokens": 1450,
+    "seconds": 12.8,
+    "metrics": {
+      "reply_chars": 5621,
+      "has_code_fence": true,
+      "starts_with_brace": false,
+      "parsed": false,
+      "parse_error": "Malformed JSON in model response: Extra data: line 16 column 4 (char 487)"
+    }
+  },
+  {
+    "version": "qc-v2",
+    "kind": "quality",
+    "change": "+ reviewer role, + score out of 10, + 'return JSON' in prose",
+    "system_prompt": "You are a reviewer who checks the quality of exam questions.",
+    "user_prompt": "Review each of the following exam questions. Give each one a\nscore out of 10 and list any problems you find.\n\n[\n  {\n    \"id\": 1,\n    \"question\": \"Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"First-Come First-Served\",\n      \"Round Robin\",\n      \"Priority with ageing\",\n      \"Multilevel queue\"\n    ],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"FCFS is non-preemptive and short processes queue behind one long process.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 2,\n    \"question\": \"Which statement about Round Robin scheduling is true?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"A very large time quantum makes it behave like FCFS\",\n      \"A very small time quantum raises context-switch overhead\",\n      \"It is a preemptive algorithm\",\n      \"It requires knowing the next CPU burst length\"\n    ],\n    \"answer\": \"A very large time quantum makes it behave like FCFS\",\n    \"explanation\": \"If the quantum exceeds the longest burst, RR degenerates to FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 3,\n    \"question\": \"What does the abbreviation SJF stand for?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"Shortest Job First\",\n    \"explanation\": \"SJF is Shortest Job First.\",\n    \"difficulty\": \"easy\",\n    \"bloom_level\": \"Apply\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 4,\n    \"question\": \"Name the scheduling algorithm in which a long process delays the short processes queued behind it.\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"This is the convoy effect under FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 5,\n    \"question\": \"Which problem does the technique of ageing solve in priority scheduling?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"The convoy effect\",\n      \"Starvation\",\n      \"Thrashing\",\n      \"Deadlock\"\n    ],\n    \"answer\": \"The convoy effect\",\n    \"explanation\": \"Ageing raises the priority of long-waiting processes.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 6,\n    \"question\": \"In a multilevel feedback queue, what happens to a process that exhausts its time quantum at the highest-priority level?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"It is demoted to the next lower-priority queue.\",\n    \"explanation\": \"MLFQ demotes CPU-bound processes to lower queues.\",\n    \"difficulty\": \"hard\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  }\n]\n\nReturn JSON with a \"reviews\" list containing the id, the score and the issues.",
+    "system_chars": 60,
+    "user_chars": 2767,
+    "raw_reply": "```json\n{\n  \"reviews\": [\n    {\n      \"id\": 1,\n      \"score\": 10,\n      \"issues\": []\n    },\n    {\n      \"id\": 2,\n      \"score\": 5,\n      \"issues\": [\n        \"Multiple options appear to be technically true (options A, B, and C are all valid characteristics of Round Robin), making the question ambiguous or a 'Multiple True/False' disguised as a single-answer MCQ unless it specifies 'Which of the following...' or is formatted for multiple correct answers.\"\n      ]\n    },\n    {\n      \"id\": 3,\n      \"score\": 8,\n      \"issues\": [\n        \"The Bloom's taxonomy level is misclassified as 'Apply'. Asking for an abbreviation definition is a lower-order cognitive skill, strictly at the 'Remember' level, not 'Apply'.\"\n      ]\n    },\n    {\n      \"id\": 4,\n      \"score\": 9,\n      \"issues\": [\n        \"Very similar to Question 1, which reduces the uniqueness and breadth of the exam.\"\n      ]\n    },\n    {\n      \"id\": 5,\n      \"score\": 2,\n      \"issues\": [\n        \"Factual/Answer Key Error: The correct answer to what ageing solves is 'Starvation' (also known as indefinite blocking), but the provided answer key incorrectly states 'The convoy effect'. The explanation even contradicts the answer by describing priority raising.\"\n      ]\n    },\n    {\n      \"id\": 6,\n      \"score\": 10,\n      \"issues\": []\n    }\n  ]\n}\n```",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 818,
+    "output_tokens": 374,
+    "seconds": 3.5,
+    "metrics": {
+      "reply_chars": 1313,
+      "has_code_fence": true,
+      "starts_with_brace": false,
+      "parsed": true,
+      "has_reviews_list": true,
+      "review_count": 6,
+      "has_sub_scores": false,
+      "scores": {
+        "1": 10.0,
+        "2": 5.0,
+        "3": 8.0,
+        "4": 9.0,
+        "5": 2.0,
+        "6": 10.0
+      },
+      "score_min": 2.0,
+      "score_max": 10.0,
+      "score_spread": 8.0,
+      "score_mean": 7.33,
+      "clean_control_score": 10.0,
+      "planted_defects_caught": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "planted_defects_caught_n": "4/5",
+      "planted_defects_missed": [
+        "q6: not answerable from the source (MLFQ absent)"
+      ],
+      "false_positive_on_control": false,
+      "duplicate_detected": false
+    }
+  },
+  {
+    "version": "qc-v3",
+    "kind": "quality",
+    "change": "+ six named criteria, + schema, + duplicate detection",
+    "system_prompt": "You are a moderation officer on a university examination\nboard. You review question papers drafted by teachers and either approve them\nor send them back.\n\nJudge each question on: clarity, correctness of the answer key, whether MCQs\nhave a single unambiguous answer, whether the difficulty matches, whether the\nBloom's taxonomy level matches, and whether it is relevant to the source\nmaterial. Also flag duplicates.\n\nReply with a single JSON object and nothing else. No prose, no markdown code\nfences.",
+    "user_prompt": "Review the question set below.\n\nSpecification: subject Operating Systems, difficulty medium, Bloom's level\nApply, 2 marks per question.\n\n<source_material>\nCPU Scheduling. The short-term scheduler selects a process from the ready\nqueue and allocates the CPU to it. First-Come First-Served (FCFS) is\nnon-preemptive and suffers from the convoy effect, where short processes wait\nbehind one long process. Shortest Job First (SJF) gives the lowest average\nwaiting time of any non-preemptive algorithm but requires knowing the next CPU\nburst length, which is not available in practice. Round Robin (RR) is\npreemptive and assigns each process a fixed time quantum; if the quantum is\ntoo large RR degenerates to FCFS, and if it is too small the context-switch\noverhead dominates. Priority scheduling can cause starvation of low-priority\nprocesses, which is solved by ageing: gradually increasing the priority of\nprocesses that wait a long time.\n</source_material>\n\nQuestion set:\n[\n  {\n    \"id\": 1,\n    \"question\": \"Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"First-Come First-Served\",\n      \"Round Robin\",\n      \"Priority with ageing\",\n      \"Multilevel queue\"\n    ],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"FCFS is non-preemptive and short processes queue behind one long process.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 2,\n    \"question\": \"Which statement about Round Robin scheduling is true?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"A very large time quantum makes it behave like FCFS\",\n      \"A very small time quantum raises context-switch overhead\",\n      \"It is a preemptive algorithm\",\n      \"It requires knowing the next CPU burst length\"\n    ],\n    \"answer\": \"A very large time quantum makes it behave like FCFS\",\n    \"explanation\": \"If the quantum exceeds the longest burst, RR degenerates to FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 3,\n    \"question\": \"What does the abbreviation SJF stand for?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"Shortest Job First\",\n    \"explanation\": \"SJF is Shortest Job First.\",\n    \"difficulty\": \"easy\",\n    \"bloom_level\": \"Apply\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 4,\n    \"question\": \"Name the scheduling algorithm in which a long process delays the short processes queued behind it.\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"This is the convoy effect under FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 5,\n    \"question\": \"Which problem does the technique of ageing solve in priority scheduling?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"The convoy effect\",\n      \"Starvation\",\n      \"Thrashing\",\n      \"Deadlock\"\n    ],\n    \"answer\": \"The convoy effect\",\n    \"explanation\": \"Ageing raises the priority of long-waiting processes.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 6,\n    \"question\": \"In a multilevel feedback queue, what happens to a process that exhausts its time quantum at the highest-priority level?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"It is demoted to the next lower-priority queue.\",\n    \"explanation\": \"MLFQ demotes CPU-bound processes to lower queues.\",\n    \"difficulty\": \"hard\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  }\n]\n\nReturn:\n\n{\n  \"reviews\": [\n    {\n      \"id\": 1,\n      \"score\": 0.0,\n      \"issues\": [\"string\"],\n      \"suggested_fix\": \"string\",\n      \"duplicate_of\": null\n    }\n  ]\n}\n\nReturn the JSON object now.",
+    "system_chars": 500,
+    "user_chars": 3745,
+    "raw_reply": "{\n  \"reviews\": [\n    {\n      \"id\": 1,\n      \"score\": 0.7,\n      \"issues\": [\n        \"Bloom's taxonomy level mismatch: requested 'Apply', question is at 'Understand'.\"\n      ],\n      \"suggested_fix\": \"Reformulate the question to require applying the concept rather than mere recall/understanding.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 2,\n      \"score\": 0.6,\n      \"issues\": [\n        \"MCQ has multiple correct options based on source material (options A, B, and C are all true statements about Round Robin in the text).\",\n        \"Bloom's level mismatch: requested 'Apply', question is 'Understand'.\"\n      ],\n      \"suggested_fix\": \"Change to a scenario-based question to match the 'Apply' Bloom's level and ensure a single correct option.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 3,\n      \"score\": 0.5,\n      \"issues\": [\n        \"Difficulty mismatch: specified 'medium', question is 'easy'.\",\n        \"Bloom's level mismatch: asked for 'Apply', question is 'Remember'.\"\n      ],\n      \"suggested_fix\": \"Design an application-level question requiring calculation or scenario analysis.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 4,\n      \"score\": 0.7,\n      \"issues\": [\n        \"Bloom's level mismatch: requested 'Apply', question is 'Understand'.\"\n      ],\n      \"suggested_fix\": \"Adapt to an application scenario.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 5,\n      \"score\": 0.2,\n      \"issues\": [\n        \"Incorrect answer key: ageing solves 'Starvation', not 'The convoy effect' (which is solved by FCFS alternatives like SJF).\",\n        \"Bloom's level mismatch: requested 'Apply', question is 'Understand'.\"\n      ],\n      \"suggested_fix\": \"Correct the answer key to 'Starvation' and elevate the Bloom's level to Apply.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 6,\n      \"score\": 0.4,\n      \"issues\": [\n        \"Irrelevant to source material: Multilevel feedback queues are not mentioned in the provided source material.\",\n        \"Difficulty and Bloom's level mismatch.\"\n      ],\n      \"suggested_fix\": \"Remove or replace with a question derived strictly from the source material.\",\n      \"duplicate_of\": null\n    }\n  ]\n}",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 1158,
+    "output_tokens": 610,
+    "seconds": 5.8,
+    "metrics": {
+      "reply_chars": 2189,
+      "has_code_fence": false,
+      "starts_with_brace": true,
+      "parsed": true,
+      "has_reviews_list": true,
+      "review_count": 6,
+      "has_sub_scores": false,
+      "scores": {
+        "1": 0.7,
+        "2": 0.6,
+        "3": 0.5,
+        "4": 0.7,
+        "5": 0.2,
+        "6": 0.4
+      },
+      "score_min": 0.2,
+      "score_max": 0.7,
+      "score_spread": 0.5,
+      "score_mean": 0.52,
+      "clean_control_score": 0.7,
+      "planted_defects_caught": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "planted_defects_caught_n": "5/5",
+      "planted_defects_missed": [],
+      "false_positive_on_control": true,
+      "duplicate_detected": false
+    }
+  },
+  {
+    "version": "qc-v4",
+    "kind": "quality",
+    "change": "FINAL: + per-criterion sub-scores, + score = min(criteria), + calibrated 1-10 rubric, + do-not-invent-issues instruction",
+    "system_prompt": "You are the moderation officer on a university examination board. Question\npapers drafted by subject teachers land on your desk and you either sign them\noff or send them back. You did not write these questions and you have no stake\nin them. Your reputation rests on catching the defective question before it\nreaches a student, so you are deliberately sceptical.\n\n## Your job\n\nScore each question out of 10 and say precisely what is wrong with it.\n\n## The six criteria\n\nJudge every question against all six. Each is worth up to 10; the question's\nscore is the **lowest** of the six, because one fatal defect sinks a question\nno matter how good it is otherwise.\n\n1. **Clarity** - unambiguous wording, no double negatives, no two readings, no\n   undefined jargon, no dependence on unseen context (\"the passage above\").\n2. **Answer-key correctness** - is `answer` actually correct, and does it\n   answer the question as worded? Verify it yourself before you accept it.\n   For MCQ, `answer` must appear verbatim in `options`.\n3. **Single unambiguous answer (MCQ / True-False)** - exactly one option\n   defensibly correct; distractors plausible but clearly wrong; no \"all of the\n   above\"; no two options arguably right. Score 10 on this criterion for Short\n   Answer and Long Answer questions, which have no options.\n4. **Difficulty match** - does the question's real difficulty match its\n   declared `difficulty`, and the paper's requested difficulty?\n5. **Bloom's level match** - does the cognitive demand match the declared\n   `bloom_level`? A recall question labelled \"Apply\" or \"Analyze\" is a defect,\n   and a common one - check it carefully.\n6. **Relevance to source** - answerable from the supplied source material plus\n   standard background for the subject. A question about facts absent from the\n   source is a defect even if the facts are true.\n\nThen, across the whole set:\n\n7. **Duplicates** - list the `id` of any question that tests substantially the\n   same point as an earlier question. Different wording, same tested fact\n   equals a duplicate.\n\n## How to score\n\n- **9-10** - print it as is.\n- **7-8** - usable; minor wording or labelling nit.\n- **4-6** - must be fixed before use: ambiguous, mislabelled, or weakly\n  grounded.\n- **1-3** - fatally defective: wrong answer key, two correct options, or not\n  answerable from the source.\n\nDo not be generous. A question you would wave through only because it is\n\"probably fine\" scores 6, not 8. Reserve 9-10 for questions you would defend in\nfront of the board. If a question genuinely has no defect, say so: `issues` is\n`[]` and `suggested_fix` is `\"\"`. Do not manufacture a complaint to look\nthorough.\n\n## Output contract\n\nReply with a single JSON object and nothing else. No prose, no markdown code\nfences, no comments. The first character of your reply must be `{` and the last\nmust be `}`.",
+    "user_prompt": "Moderate the question set below against the paper specification and the source\nmaterial it was drafted from.\n\n## Paper specification the teacher was given\n\n- Subject: Operating Systems\n- Requested difficulty: medium\n- Requested Bloom's taxonomy level: Apply\n- Requested marks per question: 2\n- Requested question types: MCQ\n\n## Source material the questions must be answerable from\n\n<source_material>\nCPU Scheduling. The short-term scheduler selects a process from the ready\nqueue and allocates the CPU to it. First-Come First-Served (FCFS) is\nnon-preemptive and suffers from the convoy effect, where short processes wait\nbehind one long process. Shortest Job First (SJF) gives the lowest average\nwaiting time of any non-preemptive algorithm but requires knowing the next CPU\nburst length, which is not available in practice. Round Robin (RR) is\npreemptive and assigns each process a fixed time quantum; if the quantum is\ntoo large RR degenerates to FCFS, and if it is too small the context-switch\noverhead dominates. Priority scheduling can cause starvation of low-priority\nprocesses, which is solved by ageing: gradually increasing the priority of\nprocesses that wait a long time.\n</source_material>\n\n## Question set under review\n\n[\n  {\n    \"id\": 1,\n    \"question\": \"Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"First-Come First-Served\",\n      \"Round Robin\",\n      \"Priority with ageing\",\n      \"Multilevel queue\"\n    ],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"FCFS is non-preemptive and short processes queue behind one long process.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 2,\n    \"question\": \"Which statement about Round Robin scheduling is true?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"A very large time quantum makes it behave like FCFS\",\n      \"A very small time quantum raises context-switch overhead\",\n      \"It is a preemptive algorithm\",\n      \"It requires knowing the next CPU burst length\"\n    ],\n    \"answer\": \"A very large time quantum makes it behave like FCFS\",\n    \"explanation\": \"If the quantum exceeds the longest burst, RR degenerates to FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 3,\n    \"question\": \"What does the abbreviation SJF stand for?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"Shortest Job First\",\n    \"explanation\": \"SJF is Shortest Job First.\",\n    \"difficulty\": \"easy\",\n    \"bloom_level\": \"Apply\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 4,\n    \"question\": \"Name the scheduling algorithm in which a long process delays the short processes queued behind it.\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"First-Come First-Served\",\n    \"explanation\": \"This is the convoy effect under FCFS.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 5,\n    \"question\": \"Which problem does the technique of ageing solve in priority scheduling?\",\n    \"type\": \"MCQ\",\n    \"options\": [\n      \"The convoy effect\",\n      \"Starvation\",\n      \"Thrashing\",\n      \"Deadlock\"\n    ],\n    \"answer\": \"The convoy effect\",\n    \"explanation\": \"Ageing raises the priority of long-waiting processes.\",\n    \"difficulty\": \"medium\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  },\n  {\n    \"id\": 6,\n    \"question\": \"In a multilevel feedback queue, what happens to a process that exhausts its time quantum at the highest-priority level?\",\n    \"type\": \"Short Answer\",\n    \"options\": [],\n    \"answer\": \"It is demoted to the next lower-priority queue.\",\n    \"explanation\": \"MLFQ demotes CPU-bound processes to lower queues.\",\n    \"difficulty\": \"hard\",\n    \"bloom_level\": \"Understand\",\n    \"marks\": 2\n  }\n]\n\n## What to return\n\nOne review object per question, in the same order, with the same `id`.\n\n{\n  \"reviews\": [\n    {\n      \"id\": 1,\n      \"score\": 0.0,\n      \"scores\": {\n        \"clarity\": 0,\n        \"answer_correctness\": 0,\n        \"single_answer\": 0,\n        \"difficulty_match\": 0,\n        \"bloom_match\": 0,\n        \"source_relevance\": 0\n      },\n      \"issues\": [\"short, specific defect - name the criterion it breaks\"],\n      \"suggested_fix\": \"one concrete rewrite instruction, or empty string if none needed\",\n      \"duplicate_of\": null\n    }\n  ],\n  \"set_level_notes\": \"one or two sentences on the set as a whole: coverage, type and difficulty balance, anything a moderator should know\"\n}\n\nRules for the fields:\n\n- `scores` holds the six per-criterion scores, each an integer 0-10.\n- `score` is the **minimum** of the six per-criterion scores, as a number.\n- `issues` is `[]` when the question is clean. Each issue is one short sentence\n  that names the defect, not a general comment.\n- `suggested_fix` is an instruction a teacher can act on (\"replace option C,\n  which is also correct, with ...\"), not a restatement of the issue.\n- `duplicate_of` is the `id` of the earlier question it duplicates, or `null`.\n- Review every question. Return exactly 6 review objects.\n\nReturn the JSON object now.",
+    "system_chars": 2853,
+    "user_chars": 5110,
+    "raw_reply": "{\n  \"reviews\": [\n    {\n      \"id\": 1,\n      \"score\": 5,\n      \"scores\": {\n        \"clarity\": 10,\n        \"answer_correctness\": 10,\n        \"single_answer\": 10,\n        \"difficulty_match\": 8,\n        \"bloom_match\": 5,\n        \"source_relevance\": 10\n      },\n      \"issues\": [\n        \"Bloom's level match: declared 'Understand', but the paper specification mandates 'Apply'.\"\n      ],\n      \"suggested_fix\": \"Rewrite the question to require applying FCFS knowledge to a scenario rather than mere recall.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 2,\n      \"score\": 5,\n      \"scores\": {\n        \"clarity\": 10,\n        \"answer_correctness\": 3,\n        \"single_answer\": 3,\n        \"difficulty_match\": 8,\n        \"bloom_match\": 5,\n        \"source_relevance\": 10\n      },\n      \"issues\": [\n        \"Answer-key correctness: Multiple options (A, B, C) are factually true statements according to the source material.\",\n        \"Single unambiguous answer: The question asks 'Which statement about Round Robin scheduling is true?' but provides multiple correct statements in the options.\",\n        \"Bloom's level match: Declared 'Understand' instead of the requested 'Apply'.\"\n      ],\n      \"suggested_fix\": \"Change the question to ask for an exception ('Which statement is FALSE...') or present a specific scenario requiring an applied choice.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 3,\n      \"score\": 2,\n      \"scores\": {\n        \"clarity\": 10,\n        \"answer_correctness\": 10,\n        \"single_answer\": 10,\n        \"difficulty_match\": 2,\n        \"bloom_match\": 2,\n        \"source_relevance\": 10\n      },\n      \"issues\": [\n        \"Question type: Paper specification requires MCQ, but this is a Short Answer question.\",\n        \"Difficulty match: Declared 'easy', whereas the paper spec requests 'medium'.\",\n        \"Bloom's level match: Declared 'Apply', but this is purely a factual recall question.\"\n      ],\n      \"suggested_fix\": \"Convert this question into an MCQ format that matches medium difficulty and the Apply Bloom's level.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 4,\n      \"score\": 2,\n      \"scores\": {\n        \"clarity\": 10,\n        \"answer_correctness\": 10,\n        \"single_answer\": 10,\n        \"difficulty_match\": 8,\n        \"bloom_match\": 5,\n        \"source_relevance\": 10\n      },\n      \"issues\": [\n        \"Question type: Paper specification requires MCQ, but this is a Short Answer question.\",\n        \"Bloom's level match: Declared 'Understand' instead of the requested 'Apply'.\"\n      ],\n      \"suggested_fix\": \"Convert this question into an MCQ format.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 5,\n      \"score\": 3,\n      \"scores\": {\n        \"clarity\": 10,\n        \"answer_correctness\": 3,\n        \"single_answer\": 10,\n        \"difficulty_match\": 8,\n        \"bloom_match\": 5,\n        \"source_relevance\": 10\n      },\n      \"issues\": [\n        \"Answer-key correctness: The answer key states 'The convoy effect', but ageing solves 'Starvation', as explicitly stated in the source text.\",\n        \"Bloom's level match: Declared 'Understand' instead of the requested 'Apply'.\"\n      ],\n      \"suggested_fix\": \"Correct the answer key to 'Starvation'.\",\n      \"duplicate_of\": null\n    },\n    {\n      \"id\": 6,\n      \"score\": 2,\n      \"scores\": {\n        \"clarity\": 10,\n        \"answer_correctness\": 10,\n        \"single_answer\": 10,\n        \"difficulty_match\": 8,\n        \"bloom_match\": 5,\n        \"source_relevance\": 2\n      },\n      \"issues\": [\n        \"Question type: Paper specification requires MCQ, but this is a Short Answer question.\",\n        \"Relevance to source: Multilevel feedback queues are not mentioned in the source text.\",\n        \"Bloom's level match: Declared 'Understand' instead of 'Apply'.\"\n      ],\n      \"suggested_fix\": \"Replace the question with an MCQ based strictly on concepts present in the provided source material.\",\n      \"duplicate_of\": null\n    }\n  ],\n  \"set_level_notes\": \"The question set fails to adhere to the paper specification in multiple areas: it includes short answer questions despite a strict MCQ-only requirement, misses the requested 'Apply' Bloom's level across almost all questions, includes factual errors in answer keys (Question 5), and tests out-of-scope concepts (Question 6).\"\n}",
+    "finish_reason": "STOP",
+    "model_used": "gemini-3.5-flash-lite",
+    "input_tokens": 2106,
+    "output_tokens": 1218,
+    "seconds": 4.9,
+    "metrics": {
+      "reply_chars": 4293,
+      "has_code_fence": false,
+      "starts_with_brace": true,
+      "parsed": true,
+      "has_reviews_list": true,
+      "review_count": 6,
+      "has_sub_scores": true,
+      "scores": {
+        "1": 5.0,
+        "2": 5.0,
+        "3": 2.0,
+        "4": 2.0,
+        "5": 3.0,
+        "6": 2.0
+      },
+      "score_min": 2.0,
+      "score_max": 5.0,
+      "score_spread": 3.0,
+      "score_mean": 3.17,
+      "clean_control_score": 5.0,
+      "planted_defects_caught": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "planted_defects_caught_n": "5/5",
+      "planted_defects_missed": [],
+      "false_positive_on_control": true,
+      "duplicate_detected": false
+    }
+  }
+]

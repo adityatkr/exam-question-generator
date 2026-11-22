@@ -10,7 +10,7 @@ ever see them.
 | **Course** | SCSE4041 — Prompt Engineering, Milestone 2 |
 | **Team** | Alt+F4 (PE-B65-01) |
 | **Members** | Aditya Thakur, Divyansh Vijayvargiya |
-| **AI tool / model** | Google Gemini — `gemini-3.6-flash`, via the official `google-genai` Python SDK |
+| **AI tool / model** | Google Gemini — `gemini-3.5-flash-lite` (default), via the official `google-genai` Python SDK |
 | **Stack** | Python 3.12 · Streamlit · ReportLab · python-docx · pypdf |
 | **Live prototype** | _paste your Streamlit Community Cloud URL here after deploying_ |
 
@@ -166,10 +166,14 @@ alone rather than of an API flag.
    create one.
 3. Copy the key.
 
-The free tier is enough for this project — a 5-question paper with a full
-quality check costs well under a cent even on the paid tier. Rate limits for
-the free tier are at
-<https://ai.google.dev/gemini-api/docs/rate-limits>.
+**Important: the free tier allows only 20 requests per day, per model.** Each
+paper costs 2 requests (generate + quality check), so a free key is good for
+about 10 papers per day per model — and the fallback chain stretches that
+across several models. If you are demonstrating this live, either use a paid
+key or check your remaining quota first at <https://ai.dev/rate-limit>.
+
+Prefer a standard `AIza…` key from **Create API key**. AI Studio also issues
+short-lived `AQ.…` tokens, which work but expire.
 
 ### 2. Run it locally
 
@@ -295,10 +299,11 @@ Full table, pass criteria and analysis: [`tests/test_cases.md`](tests/test_cases
 
 ## Model selection, and why it is not the newest model
 
-`config.MODEL_ID` is `gemini-3.6-flash`. We did not pick that from the docs; we
-picked it by listing the models our key could actually reach
+`config.MODEL_ID` is `gemini-3.5-flash-lite`. We did not pick that from the
+docs; we picked it by listing the models our key could actually reach
 (`client.models.list()`) and then calling each Flash candidate for real on
-2026-11-22:
+2026-11-22. **Two independent constraints** decided it — capacity and daily
+quota:
 
 | Model | Result |
 |---|---|
@@ -307,12 +312,25 @@ picked it by listing the models our key could actually reach
 | `gemini-3.6-flash` | ✅ served in ~9 s |
 | `gemini-3.5-flash` | ✅ served in ~23 s |
 | `gemini-2.5-flash` | **404** — "no longer available to new users" |
+| `gemini-3.5-flash-lite` | ✅ served — **and still had daily quota** |
 
-So the app defaults to the newest Flash model that actually served, and
-`config.FALLBACK_MODELS` lists the others newest-first. On a 503, 429 or 404
-the client walks that list, which means the app upgrades itself to 3.8 Flash
-automatically once capacity frees up, and degrades instead of failing when it
-does not.
+The second constraint is the one that actually decides it. The Gemini free tier
+allows only **20 `generateContent` requests per day, _per model_** (quota id
+`GenerateRequestsPerDayPerProjectPerModel-FreeTier`). Building and testing this
+project exhausted `gemini-3.6-flash` and `gemini-3.5-flash`:
+
+```
+Quota exceeded for metric: generate_content_free_tier_requests,
+limit: 20, model: gemini-3.6-flash
+Please retry in 15h18m7s
+```
+
+Because the quota is scoped per model, a 429 on one model says nothing about
+the next — which is exactly what the fallback chain exploits. The default is
+`gemini-3.5-flash-lite` because **a demo that runs beats a marginally better
+model that returns 429**, and `config.FALLBACK_MODELS` lists the rest
+newest-first, so the app upgrades itself to 3.8 Flash automatically once
+capacity and quota free up.
 
 That 503 also taught us something worth writing down: the `google-genai` SDK
 retries 5xx internally with **no bounded attempt count**, so our first test
@@ -326,31 +344,35 @@ because of that.
 
 1. **Needs a Gemini API key.** No key and nothing generates. The app says so
    clearly rather than failing silently.
-2. **Flash models get overloaded.** 503 "high demand" is common on the newest
+2. **The free tier is 20 requests per day, per model** — about 10 papers per
+   model per day, since each paper costs 2 requests. This is the binding
+   constraint on a student account, not cost. Exhausting it locks that model
+   out for ~15 hours.
+3. **Flash models get overloaded.** 503 "high demand" is common on the newest
    Flash models. The fallback chain above makes this survivable, but at busy
    times every model in the chain can be busy at once, and then the app tells
    you to wait a minute.
-3. **The quality checker is itself an LLM.** It catches the defects we planted
+4. **The quality checker is itself an LLM.** It catches the defects we planted
    and tested for (see the iteration log), but it is a second opinion, not a
    proof. **A human must still approve any paper before it reaches students.**
-4. **No OCR.** Scanned PDFs have no extractable text layer; the app detects
+5. **No OCR.** Scanned PDFs have no extractable text layer; the app detects
    this and asks you to paste the notes instead.
-5. **20,000-character source limit** (~5,000 tokens), to keep cost
+6. **20,000-character source limit** (~5,000 tokens), to keep cost
    predictable. Longer notes must be split across papers.
-6. **20-question ceiling**, mainly to bound output tokens and latency. A
+7. **20-question ceiling**, mainly to bound output tokens and latency. A
    20-question paper plus review takes roughly 1–3 minutes.
-7. **No diagrams, equations or images** in questions. Output is plain text, so
+8. **No diagrams, equations or images** in questions. Output is plain text, so
    subjects that need circuit diagrams or rendered mathematics are poorly
    served. LaTeX is passed through as literal text.
-8. **No persistence.** Everything lives in Streamlit session state; refreshing
+9. **No persistence.** Everything lives in Streamlit session state; refreshing
    the page loses the current paper. Export before you refresh.
-9. **Non-English support is best-effort.** It works (tested in Hindi), but the
+10. **Non-English support is best-effort.** It works (tested in Hindi), but the
    quality checker's criteria were written and calibrated in English.
-10. **Costs money per click** once past the free tier — roughly US$0.75 per
+11. **Costs money per click** once past the free tier — roughly US$0.75 per
     million input and US$3.75 per million output tokens (thinking tokens
     included) at `gemini-3.6-flash` introductory rates, which rise on
     2027-01-01. The diagnostics panel shows the real figure for each run.
-11. **Single user.** Streamlit Community Cloud apps share one process; heavy
+12. **Single user.** Streamlit Community Cloud apps share one process; heavy
     concurrent use will queue.
 
 ---
@@ -404,5 +426,4 @@ reviewed each other's prompts, and ran the iteration and test suites.
 
 ---
 
-Built with Google Gemini (`gemini-3.6-flash`) via the official `google-genai`
-Python SDK.
+Built with Google Gemini via the official `google-genai` Python SDK.
