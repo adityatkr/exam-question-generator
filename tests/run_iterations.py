@@ -3,7 +3,7 @@
 The course deliverable requires that the observed effect recorded in
 prompts/iteration_log.md comes from an actual run, not from guesswork. This
 script holds the v1..v4 text of both the generator prompt and the
-quality-check prompt, sends each version to Claude on a fixed input, and
+quality-check prompt, sends each version to Gemini on a fixed input, and
 records what came back.
 
 Usage:
@@ -39,7 +39,7 @@ for _stream in (sys.stdout, sys.stderr):
 
 import config  # noqa: E402
 from core import prompt_loader  # noqa: E402
-from core.claude_client import ClaudeError, call_claude, get_api_key  # noqa: E402
+from core.gemini_client import GeminiError, call_gemini, get_api_key  # noqa: E402
 from core.validators import extract_json, validate_questions  # noqa: E402
 
 OUT_DIR = Path(__file__).resolve().parent / "output"
@@ -503,13 +503,17 @@ def run_version(
         "user_chars": len(user),
     }
     try:
-        response = call_claude(
+        response = call_gemini(
             system=system or "You are a helpful assistant.",
             user=user,
             max_tokens=8000,
-            effort=config.GENERATOR_EFFORT,
+            # JSON mode is OFF for v1/v2: the point of those versions is to
+            # measure what the PROMPT alone achieves. v3/v4 get the same
+            # treatment so the comparison stays about the prompt text.
+            json_mode=False,
+            thinking=config.GENERATOR_THINKING,
         )
-    except ClaudeError as exc:
+    except GeminiError as exc:
         record["error"] = str(exc)
         print(f"    API error: {exc}")
         return record
@@ -517,7 +521,8 @@ def run_version(
     record.update(
         {
             "raw_reply": response.text,
-            "stop_reason": response.stop_reason,
+            "finish_reason": response.finish_reason,
+            "model_used": response.model,
             "input_tokens": response.input_tokens,
             "output_tokens": response.output_tokens,
             "seconds": round(time.time() - started, 1),
@@ -565,10 +570,10 @@ def main() -> int:
     args = parser.parse_args()
 
     if not get_api_key():
-        print("ANTHROPIC_API_KEY is not set.")
+        print("GEMINI_API_KEY is not set.")
         return 2
 
-    print(f"Model: {config.MODEL_ID}  (effort: {config.GENERATOR_EFFORT})")
+    print(f"Model: {config.MODEL_ID}  (thinking: {config.GENERATOR_THINKING})")
     print(f"Fixed input: {SUBJECT}, {NUM} MCQs, {DIFFICULTY}, Bloom {BLOOM}")
 
     records: list[dict[str, Any]] = []
@@ -599,7 +604,7 @@ def main() -> int:
     print(
         f"{len(records)} version(s) run · {total_in:,} input / "
         f"{total_out:,} output tokens · "
-        f"~${(total_in / 1e6) * 4 + (total_out / 1e6) * 20:.4f}"
+        f"~${(total_in / 1e6) * config.PRICE_INPUT_PER_MTOK + (total_out / 1e6) * config.PRICE_OUTPUT_PER_MTOK:.4f}"
     )
     print(f"Wrote {path}")
     return 0

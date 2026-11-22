@@ -10,7 +10,7 @@
 | 4 | `quality_check_user.md` | User template | `core/quality_checker.py` | Quality check |
 | 5 | `regenerate_user.md` | User template | `core/generator.py` | Regenerate flagged |
 
-Those 5 files compose **3 distinct Claude calls**, each a system + user pair:
+Those 5 files compose **3 distinct Gemini calls**, each a system instruction + user prompt pair:
 
 | Call | System prompt | User prompt |
 |------|---------------|-------------|

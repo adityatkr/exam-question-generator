@@ -5,7 +5,7 @@ generate_questions, check_questions, and the exporters -- so a pass here means
 the app passes. Nothing is mocked; cases that reach the API make real calls.
 
 Usage:
-    set ANTHROPIC_API_KEY=sk-ant-...        (PowerShell: $env:ANTHROPIC_API_KEY="...")
+    set GEMINI_API_KEY=...                  (or put it in .streamlit/secrets.toml)
     python tests/run_tests.py               # run every case
     python tests/run_tests.py --offline     # validation-only cases, no API calls
     python tests/run_tests.py --case 3 7    # run selected cases
@@ -38,7 +38,7 @@ for _stream in (sys.stdout, sys.stderr):
 
 import config  # noqa: E402
 from core import exporter, quality_checker  # noqa: E402
-from core.claude_client import ClaudeError, get_api_key  # noqa: E402
+from core.gemini_client import GeminiError, get_api_key  # noqa: E402
 from core.generator import generate_questions  # noqa: E402
 from core.validators import (  # noqa: E402
     Settings,
@@ -560,7 +560,7 @@ def run(cases: list[Case]) -> list[Outcome]:
             detail = case.run()
             outcome.detail = detail
             outcome.passed, outcome.actual = judge(case, detail)
-        except ClaudeError as exc:
+        except GeminiError as exc:
             outcome.actual = f"API error: {exc}"
             outcome.detail = {"exception": str(exc)}
         except Exception as exc:  # noqa: BLE001 - the harness must not die
@@ -611,7 +611,7 @@ def main() -> int:
 
     if any(c.needs_api for c in cases) and not get_api_key():
         print(
-            "ANTHROPIC_API_KEY is not set, so the API-backed cases cannot run.\n"
+            "GEMINI_API_KEY is not set, so the API-backed cases cannot run.\n"
             "Set it, or pass --offline to run the validation-only cases."
         )
         return 2

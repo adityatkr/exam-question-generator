@@ -6,15 +6,45 @@ changed in exactly one place.
 
 # --- Model -------------------------------------------------------------------
 # Change this single constant to swap models.
-MODEL_ID = "claude-opus-5-5"
+#
+# Chosen on 2026-11-22 by listing the models available to our key
+# (client.models.list()) and calling each candidate. gemini-3.8-flash and
+# gemini-3.7-flash both returned 503 UNAVAILABLE ("high demand") at the time,
+# so the newest Flash model that actually served is 3.6.
+MODEL_ID = "gemini-3.6-flash"
 
-# Thinking depth / token spend. One of: low | medium | high | xhigh | max.
-# Claude Opus 5.5 always thinks; `effort` is the only depth control.
-GENERATOR_EFFORT = "medium"
-QUALITY_EFFORT = "medium"
+# Tried in order if MODEL_ID returns 503 UNAVAILABLE / 429. Newer Flash models
+# are listed first so the app upgrades itself automatically once demand on them
+# eases, then degrades to older ones rather than failing.
+FALLBACK_MODELS = [
+    "gemini-3.8-flash",
+    "gemini-3.7-flash",
+    "gemini-3.5-flash",
+]
 
-# Output-token ceilings. Generation scales with the number of questions so we
-# never pay for 16k tokens when the user asked for 2 questions.
+# Thinking depth. One of: low | medium | high.
+# Generation runs at "low": the generator prompt is highly specified, so extra
+# reasoning buys little. Review runs at "medium": verifying an answer key and
+# judging Bloom's level is the part that genuinely needs reasoning.
+GENERATOR_THINKING = "low"
+QUALITY_THINKING = "medium"
+
+# Hard ceiling on one HTTP request. Without this the SDK retries a 503 for
+# minutes on end -- which is exactly what we hit while choosing the model.
+REQUEST_TIMEOUT_MS = 120_000
+# Transport-level retry attempts per model before we move to the next model.
+HTTP_RETRY_ATTEMPTS = 2
+
+# --- Pricing (for the cost estimate in the diagnostics panel) ----------------
+# gemini-3.6-flash introductory rate, valid through 2026-12-31; rises to
+# 1.50 / 7.50 on 2027-01-01. Output price includes thinking tokens.
+# Source: https://ai.google.dev/gemini-api/docs/pricing
+PRICE_INPUT_PER_MTOK = 0.75
+PRICE_OUTPUT_PER_MTOK = 3.75
+
+# --- Output-token ceilings ---------------------------------------------------
+# Generation scales with the number of questions so we never pay for a 20k
+# ceiling when the user asked for 2 questions.
 MAX_TOKENS_BASE = 2000
 MAX_TOKENS_PER_QUESTION = 700
 MAX_TOKENS_CEILING = 20000
@@ -54,3 +84,4 @@ MAX_JSON_ATTEMPTS = 2
 APP_TITLE = "Exam Question Generator with Quality Check"
 TEAM = "Alt+F4 (PE-B65-01) - Aditya Thakur, Divyansh Vijayvargiya"
 COURSE = "SCSE4041 - Prompt Engineering, Milestone 2"
+AI_TOOL = "Google Gemini (google-genai Python SDK)"

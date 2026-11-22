@@ -16,7 +16,7 @@ from string import Formatter
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 
 # Each prompt file opens with an HTML comment documenting its number and role.
-# That header is for the human reader and the grader, not for Claude.
+# That header is for the human reader and the grader, not for Gemini.
 _HEADER_COMMENT = re.compile(r"^\s*<!--.*?-->\s*", re.DOTALL)
 
 
@@ -37,7 +37,7 @@ def load(name: str) -> str:
 def _assert_template(name: str) -> None:
     """System prompts are sent verbatim and are not format templates.
 
-    They legitimately contain literal braces (the output contract tells Claude
+    They legitimately contain literal braces (the output contract tells Gemini
     its reply must start with `{`), which str.format() would misread as
     placeholders. Only the user templates may be rendered.
     """

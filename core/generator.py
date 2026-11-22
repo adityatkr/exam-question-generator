@@ -2,7 +2,7 @@
 
 Flow for one generation:
 
-    settings -> render generator_user.md -> Claude (generator_system.md)
+    settings -> render generator_user.md -> Gemini (generator_system.md)
              -> extract JSON -> validate -> questions
 
 If the JSON is malformed or fails validation, the call is retried **once**
@@ -15,14 +15,14 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
-import anthropic
+from google import genai
 
 import config
 from core import prompt_loader
-from core.claude_client import (
-    ClaudeError,
-    ClaudeResponse,
-    call_claude,
+from core.gemini_client import (
+    GeminiError,
+    GeminiResponse,
+    call_gemini,
     generation_max_tokens,
 )
 from core.validators import Settings, extract_json, validate_questions
@@ -37,7 +37,7 @@ class GenerationResult:
     questions: list[dict[str, Any]] = field(default_factory=list)
     attempts: int = 0
     errors: list[str] = field(default_factory=list)
-    responses: list[ClaudeResponse] = field(default_factory=list)
+    responses: list[GeminiResponse] = field(default_factory=list)
     repaired: bool = False          # True when attempt 1 failed and 2 worked
     unusable_source: bool = False   # model reported the source as unusable
 
@@ -70,18 +70,18 @@ def _attempt(
     user: str,
     max_tokens: int,
     expected_count: int | None,
-    client: anthropic.Anthropic | None,
-) -> tuple[list[dict[str, Any]], list[str], ClaudeResponse, bool]:
+    client: genai.Client | None,
+) -> tuple[list[dict[str, Any]], list[str], GeminiResponse, bool]:
     """One API call plus parse + validate. Returns (questions, errors, resp, unusable)."""
-    response = call_claude(
+    response = call_gemini(
         system=system,
         user=user,
         max_tokens=max_tokens,
-        effort=config.GENERATOR_EFFORT,
+        thinking=config.GENERATOR_THINKING,
         client=client,
     )
 
-    if response.stop_reason == "max_tokens":
+    if response.finish_reason == "MAX_TOKENS":
         return (
             [],
             [
@@ -104,7 +104,7 @@ def _attempt(
 
 def generate_questions(
     settings: Settings,
-    client: anthropic.Anthropic | None = None,
+    client: genai.Client | None = None,
 ) -> GenerationResult:
     """Generate a fresh question paper. Retries once on malformed output."""
     result = GenerationResult()
@@ -118,7 +118,7 @@ def generate_questions(
             questions, errors, response, unusable = _attempt(
                 system, user, max_tokens, settings.num_questions, client
             )
-        except ClaudeError as exc:
+        except GeminiError as exc:
             result.errors = [str(exc)]
             return result
 
@@ -151,7 +151,7 @@ def generate_questions(
 def regenerate_flagged(
     settings: Settings,
     flagged: list[dict[str, Any]],
-    client: anthropic.Anthropic | None = None,
+    client: genai.Client | None = None,
 ) -> GenerationResult:
     """Replace flagged questions, keeping their ids so they drop into the same slots.
 
@@ -195,7 +195,7 @@ def regenerate_flagged(
             questions, errors, response, unusable = _attempt(
                 system, user, max_tokens, len(rejected), client
             )
-        except ClaudeError as exc:
+        except GeminiError as exc:
             result.errors = [str(exc)]
             return result
 

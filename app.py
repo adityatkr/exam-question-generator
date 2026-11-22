@@ -15,7 +15,7 @@ import streamlit as st
 
 import config
 from core import exporter, quality_checker
-from core.claude_client import ClaudeError, UsageTally, get_api_key
+from core.gemini_client import GeminiError, UsageTally, get_api_key
 from core.generator import generate_questions, regenerate_flagged
 from core.validators import (
     Settings,
@@ -73,10 +73,10 @@ st.caption(
 api_key_present = bool(get_api_key())
 if not api_key_present:
     st.error(
-        "**No Anthropic API key configured.** Add `ANTHROPIC_API_KEY` to "
+        "**No Gemini API key configured.** Add `GEMINI_API_KEY` to "
         "`.streamlit/secrets.toml` when running locally, or paste it into the "
         "app's **Settings → Secrets** box on Streamlit Community Cloud. "
-        "Get a key at https://console.anthropic.com → Settings → API keys."
+        "Get a free key at https://aistudio.google.com/apikey"
     )
 
 # ---------------------------------------------------------------------------
@@ -125,7 +125,7 @@ with st.sidebar:
         "Run quality check",
         value=True,
         help=(
-            "A second, independent Claude call that scores every question out "
+            "A second, independent Gemini call that scores every question out "
             "of 10 and flags anything below "
             f"{config.QUALITY_THRESHOLD}."
         ),
@@ -134,8 +134,8 @@ with st.sidebar:
     st.divider()
     st.caption(
         f"**Model:** `{config.MODEL_ID}`  \n"
-        f"**Effort:** {config.GENERATOR_EFFORT} (generate) / "
-        f"{config.QUALITY_EFFORT} (review)  \n"
+        f"**Thinking:** {config.GENERATOR_THINKING} (generate) / "
+        f"{config.QUALITY_THINKING} (review)  \n"
         f"**Flag threshold:** {config.QUALITY_THRESHOLD}/10  \n"
         f"**API key:** {'✅ found' if api_key_present else '❌ missing'}"
     )
@@ -256,7 +256,7 @@ if generate_clicked:
                 if result.unusable_source:
                     status.update(label="Source unusable", state="error")
                     st.error(
-                        "Claude could not find teachable subject content in "
+                        "Gemini could not find teachable subject content in "
                         "that material: "
                         + "; ".join(result.errors),
                         icon="🚫",
@@ -321,7 +321,7 @@ if generate_clicked:
                     st.session_state.questions = questions
                     st.session_state.usage = usage
                     status.update(label="Done", state="complete")
-        except ClaudeError as exc:
+        except GeminiError as exc:
             st.error(str(exc), icon="🚫")
             log(f"API error: {exc}")
 
@@ -448,7 +448,7 @@ if questions and settings:
                             st.session_state.usage = usage
                             status.update(label="Done", state="complete")
                     st.rerun()
-                except ClaudeError as exc:
+                except GeminiError as exc:
                     st.error(str(exc), icon="🚫")
         elif st.session_state.quality_ran:
             st.success("No questions fell below the quality threshold.", icon="✅")
@@ -621,7 +621,9 @@ if questions and settings:
                 f"{tally.input_tokens:,} input tokens · "
                 f"{tally.output_tokens:,} output tokens · "
                 f"≈ ${tally.estimated_cost_usd:.4f} at "
-                f"`{config.MODEL_ID}` list pricing"
+                f"`{config.MODEL_ID}` list pricing "
+                f"(${config.PRICE_INPUT_PER_MTOK}/${config.PRICE_OUTPUT_PER_MTOK} "
+                "per MTok)"
             )
             st.dataframe(tally.details, hide_index=True, use_container_width=True)
         if st.session_state.log:
@@ -636,6 +638,6 @@ else:
 
 st.divider()
 st.caption(
-    f"Built with Claude (`{config.MODEL_ID}`) via the official `anthropic` "
-    f"Python SDK · 5 prompts in /prompts · {config.TEAM}"
+    f"Built with Google Gemini (`{config.MODEL_ID}`) via the official "
+    f"`google-genai` Python SDK · 5 prompts in /prompts · {config.TEAM}"
 )

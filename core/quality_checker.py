@@ -1,6 +1,6 @@
 """Module 3: the quality check.
 
-A SECOND, independent Claude call with its own system prompt reviews the
+A SECOND, independent Gemini call with its own system prompt reviews the
 generated questions. It is given the paper specification and the source
 material but is told nothing about which model wrote the questions, so it
 judges the output rather than defending it.
@@ -16,14 +16,14 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
-import anthropic
+from google import genai
 
 import config
 from core import prompt_loader
-from core.claude_client import (
-    ClaudeError,
-    ClaudeResponse,
-    call_claude,
+from core.gemini_client import (
+    GeminiError,
+    GeminiResponse,
+    call_gemini,
     quality_max_tokens,
 )
 from core.validators import Settings, extract_json, validate_reviews
@@ -52,7 +52,7 @@ class QualityResult:
     set_level_notes: str = ""
     attempts: int = 0
     errors: list[str] = field(default_factory=list)
-    responses: list[ClaudeResponse] = field(default_factory=list)
+    responses: list[GeminiResponse] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
@@ -94,7 +94,7 @@ _REPAIR_NOTE = (
 def check_questions(
     questions: list[dict[str, Any]],
     settings: Settings,
-    client: anthropic.Anthropic | None = None,
+    client: genai.Client | None = None,
 ) -> QualityResult:
     """Run the quality-check pass. Retries once on malformed output."""
     result = QualityResult()
@@ -117,20 +117,20 @@ def check_questions(
     for attempt in range(1, config.MAX_JSON_ATTEMPTS + 1):
         result.attempts = attempt
         try:
-            response = call_claude(
+            response = call_gemini(
                 system=system,
                 user=user,
                 max_tokens=max_tokens,
-                effort=config.QUALITY_EFFORT,
+                thinking=config.QUALITY_THINKING,
                 client=client,
             )
-        except ClaudeError as exc:
+        except GeminiError as exc:
             result.errors = [str(exc)]
             return result
 
         result.responses.append(response)
 
-        if response.stop_reason == "max_tokens":
+        if response.finish_reason == "MAX_TOKENS":
             errors = [
                 "The review hit the output-token limit and was cut off. Review "
                 "fewer questions at a time."

@@ -2,10 +2,10 @@
 
 Two jobs:
 
-* `validate_settings` guards the Claude call. It runs before any money is
+* `validate_settings` guards the Gemini call. It runs before any money is
   spent, and returns human-readable errors for the UI.
 * `validate_questions` / `validate_reviews` guard everything downstream of the
-  Claude call: they accept only well-formed JSON of the exact shape the
+  Gemini call: they accept only well-formed JSON of the exact shape the
   prompts asked for, and are what makes the "retry once on malformed output"
   rule possible.
 """
