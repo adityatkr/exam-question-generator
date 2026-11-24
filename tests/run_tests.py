@@ -462,6 +462,25 @@ def _expect_error(fn: Callable[[], Any]) -> str:
 # Pass/fail judgement
 # ---------------------------------------------------------------------------
 
+def _api_failure(detail: dict[str, Any]) -> str | None:
+    """If an API-backed case produced nothing, say why, in the actual column.
+
+    The judge strings below describe a successful run. When a case fails -- a
+    503, a refusal, a validator rejection -- the actual column must report the
+    failure, never the shape the case was hoping for.
+    """
+    if detail.get("generated"):
+        return None
+    errors = detail.get("errors") or []
+    if detail.get("unusable_source"):
+        return f"0 questions - source refused: {errors[0] if errors else 'unusable'}"
+    if errors:
+        return f"0 questions generated. {errors[0]}"
+    if "exception" in detail:
+        return f"0 questions generated. {detail['exception']}"
+    return "0 questions generated (no error recorded)."
+
+
 def judge(case: Case, detail: dict[str, Any]) -> tuple[bool, str]:
     """Decide pass/fail and write the one-line 'actual' column."""
     n = case.number
@@ -479,6 +498,11 @@ def judge(case: Case, detail: dict[str, Any]) -> tuple[bool, str]:
         )
         return ok, f"Rejected: {detail['errors'][0] if detail['errors'] else '-'}"
 
+    if n in {9, 10, 11, 12, 14}:
+        failure = _api_failure(detail)
+        if failure is not None:
+            return False, failure
+
     if n == 9:
         ok = (
             detail.get("generated") == 1
@@ -486,7 +510,8 @@ def judge(case: Case, detail: dict[str, Any]) -> tuple[bool, str]:
             and detail.get("qc_ok")
         )
         return ok, (
-            f"1 MCQ generated, quality {detail.get('average_score')}/10, "
+            f"{detail.get('generated')} MCQ generated, quality "
+            f"{detail.get('average_score')}/10, "
             f"{len(detail.get('flagged', []))} flagged, exports OK"
         )
 
@@ -497,7 +522,7 @@ def judge(case: Case, detail: dict[str, Any]) -> tuple[bool, str]:
             and detail.get("qc_ok")
         )
         return ok, (
-            f"5 questions, types {detail.get('types')}, difficulties "
+            f"{detail.get('generated')} questions, types {detail.get('types')}, difficulties "
             f"{detail.get('difficulties')}, avg {detail.get('average_score')}/10"
         )
 
@@ -508,7 +533,8 @@ def judge(case: Case, detail: dict[str, Any]) -> tuple[bool, str]:
             and detail.get("qc_ok")
         )
         return ok, (
-            f"3 Short Answer from topic only, Bloom {detail.get('blooms')}, "
+            f"{detail.get('generated')} Short Answer from topic only, "
+            f"Bloom {detail.get('blooms')}, "
             f"avg {detail.get('average_score')}/10"
         )
 
@@ -531,13 +557,17 @@ def judge(case: Case, detail: dict[str, Any]) -> tuple[bool, str]:
         devanagari = any("ऀ" <= ch <= "ॿ" for ch in first)
         ok = detail.get("generated") == 3 and devanagari and detail.get("qc_ok")
         return ok, (
-            f"3 questions in Devanagari script, Bloom {detail.get('blooms')}, "
+            f"{detail.get('generated')} questions in Devanagari script, "
+            f"Bloom {detail.get('blooms')}, "
             f"avg {detail.get('average_score')}/10"
         )
 
     if n == 15:
         warned = bool(detail["validation"]["warnings"])
         pipe = detail["pipeline"]
+        failure = _api_failure(pipe)
+        if failure is not None:
+            return False, f"Warned at validation; then {failure}"
         ok = warned and pipe.get("generated") == 3
         return ok, (
             f"Warned at validation; 3 produced with marks {pipe.get('marks')}, "
@@ -640,32 +670,66 @@ def main() -> int:
     print(markdown_table(outcomes))
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUT_DIR / "results.json").write_text(
-        json.dumps(
-            [
-                {
-                    "number": o.case.number,
-                    "name": o.case.name,
-                    "kind": o.case.kind,
-                    "description": o.case.description,
-                    "expected": o.case.expected,
-                    "actual": o.actual,
-                    "passed": o.passed,
-                    "seconds": o.seconds,
-                    "detail": o.detail,
-                }
-                for o in outcomes
-            ],
-            indent=2,
-            ensure_ascii=False,
-            default=str,
-        ),
+    results_path = OUT_DIR / "results.json"
+
+    fresh = {
+        o.case.number: {
+            "number": o.case.number,
+            "name": o.case.name,
+            "kind": o.case.kind,
+            "description": o.case.description,
+            "expected": o.case.expected,
+            "actual": o.actual,
+            "passed": o.passed,
+            "seconds": o.seconds,
+            "detail": o.detail,
+        }
+        for o in outcomes
+    }
+
+    # A partial run (--offline / --case) must not throw away the results of the
+    # cases it did not run: results.json is the evidence behind test_cases.md.
+    # Merge into whatever is already on disk, replacing only what we just ran.
+    merged = {}
+    if results_path.exists():
+        try:
+            for row in json.loads(results_path.read_text(encoding="utf-8")):
+                merged[int(row["number"])] = row
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+            merged = {}
+    carried = sorted(set(merged) - set(fresh))
+    merged.update(fresh)
+    rows = [merged[n] for n in sorted(merged)]
+
+    results_path.write_text(
+        json.dumps(rows, indent=2, ensure_ascii=False, default=str),
         encoding="utf-8",
     )
+
+    # The Markdown table is rebuilt from the merged set so it always shows
+    # every case we have a result for, not just this invocation's.
+    all_cases = {c.number: c for c in build_cases()}
+    table_rows = [
+        "| # | Type | Input | Expected output | Actual output | Pass/Fail |",
+        "|---|------|-------|-----------------|---------------|-----------|",
+    ]
+    for row in rows:
+        case = all_cases.get(row["number"])
+        table_rows.append(
+            f"| {row['number']} | {row['kind']} | **{row['name']}** — "
+            f"{row['description']} | {row['expected']} | {row['actual']} | "
+            f"{'✅ Pass' if row['passed'] else '❌ Fail'} |"
+        )
     (OUT_DIR / "results_table.md").write_text(
-        markdown_table(outcomes), encoding="utf-8"
+        "\n".join(table_rows), encoding="utf-8"
     )
-    print(f"\nWrote {OUT_DIR / 'results.json'} and {OUT_DIR / 'results_table.md'}")
+
+    print(f"\nWrote {results_path} and {OUT_DIR / 'results_table.md'}")
+    if carried:
+        print(
+            f"Carried forward {len(carried)} earlier result(s) not run this "
+            f"time: {', '.join(str(n) for n in carried)}"
+        )
     return 0 if passed == len(outcomes) else 1
 
 

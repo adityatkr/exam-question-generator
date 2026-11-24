@@ -1,0 +1,123 @@
+{
+  "generated_at": "2026-11-24T20:39:45",
+  "app": "Exam Question Generator with Quality Check",
+  "team": "Alt+F4 (PE-B65-01) - Aditya Thakur, Divyansh Vijayvargiya",
+  "model": "gemini-3.5-flash-lite",
+  "settings": {
+    "subject": "Operating Systems",
+    "difficulty": "mixed",
+    "bloom_level": "Mixed",
+    "num_questions": 5,
+    "marks": 2,
+    "question_types": [
+      "MCQ",
+      "Short Answer",
+      "Long Answer",
+      "True/False"
+    ]
+  },
+  "total_marks": 10,
+  "quality_threshold": 7.0,
+  "set_level_notes": "",
+  "usage": {},
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which CPU scheduling algorithm gives the lowest average waiting time among all non-preemptive algorithms?",
+      "type": "MCQ",
+      "options": [
+        "First-Come First-Served (FCFS)",
+        "Shortest Job First (SJF)",
+        "Round Robin (RR)",
+        "Priority Scheduling"
+      ],
+      "answer": "Shortest Job First (SJF)",
+      "explanation": "Shortest Job First (SJF) is proven to yield the lowest average waiting time for any set of non-preemptive processes. FCFS suffers from the convoy effect, Round Robin is preemptive, and Priority scheduling does not guarantee optimal average waiting time.",
+      "difficulty": "easy",
+      "bloom_level": "Remember",
+      "marks": 2,
+      "score": null,
+      "scores": {},
+      "issues": [],
+      "suggested_fix": "",
+      "duplicate_of": null,
+      "flagged": false
+    },
+    {
+      "id": 2,
+      "question": "What scheduling phenomenon occurs in First-Come First-Served (FCFS) scheduling when short processes are forced to wait behind a single long process?",
+      "type": "Short Answer",
+      "options": [],
+      "answer": "The convoy effect",
+      "explanation": "The convoy effect occurs in non-preemptive FCFS scheduling when multiple short processes wait in the ready queue behind one CPU-bound long process, resulting in lower CPU and device utilization.",
+      "difficulty": "medium",
+      "bloom_level": "Understand",
+      "marks": 2,
+      "score": null,
+      "scores": {},
+      "issues": [],
+      "suggested_fix": "",
+      "duplicate_of": null,
+      "flagged": false
+    },
+    {
+      "id": 3,
+      "question": "If the time quantum in a Round Robin (RR) scheduling algorithm is set extremely high, the algorithm degenerates into First-Come First-Served (FCFS).",
+      "type": "True/False",
+      "options": [
+        "True",
+        "False"
+      ],
+      "answer": "True",
+      "explanation": "When the time quantum of Round Robin becomes exceptionally large, processes complete their CPU bursts before the quantum expires, causing RR to behave exactly like FCFS.",
+      "difficulty": "easy",
+      "bloom_level": "Understand",
+      "marks": 2,
+      "score": null,
+      "scores": {},
+      "issues": [],
+      "suggested_fix": "",
+      "duplicate_of": null,
+      "flagged": false
+    },
+    {
+      "id": 4,
+      "question": "In priority scheduling, low-priority processes may suffer from starvation. Explain how the technique of 'ageing' resolves this issue.",
+      "type": "Long Answer",
+      "options": [],
+      "answer": "Ageing gradually increases the priority of processes that wait in the ready queue for long periods. As a process spends more time waiting, its priority rises until it becomes high enough to gain CPU execution time, thereby preventing starvation.",
+      "explanation": "Ageing addresses indefinite blocking/starvation by making process priority a function of time spent waiting, guaranteeing that every process eventually gets executed.",
+      "difficulty": "medium",
+      "bloom_level": "Apply",
+      "marks": 2,
+      "score": null,
+      "scores": {},
+      "issues": [],
+      "suggested_fix": "",
+      "duplicate_of": null,
+      "flagged": false
+    },
+    {
+      "id": 5,
+      "question": "What is the primary operational trade-off when selecting a very small time quantum for a Round Robin CPU scheduler?",
+      "type": "MCQ",
+      "options": [
+        "The algorithm degenerates to non-preemptive Shortest Job First.",
+        "Low-priority processes will experience complete starvation.",
+        "Context-switch overhead dominates CPU utilization.",
+        "The short-term scheduler becomes completely unnecessary."
+      ],
+      "answer": "Context-switch overhead dominates CPU utilization.",
+      "explanation": "If the time quantum is set too small, the system spends a disproportionate amount of time context switching relative to actual process execution time, degrading overall system throughput.",
+      "difficulty": "hard",
+      "bloom_level": "Analyze",
+      "marks": 2,
+      "score": null,
+      "scores": {},
+      "issues": [],
+      "suggested_fix": "",
+      "duplicate_of": null,
+      "flagged": false
+    }
+  ]
+}
