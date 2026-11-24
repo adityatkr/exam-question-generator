@@ -1,6 +1,6 @@
 ﻿id,type,difficulty,bloom_level,marks,score,flagged,duplicate_of,clarity,answer_correctness,single_answer,difficulty_match,bloom_match,source_relevance,issues,suggested_fix,question
-1,MCQ,easy,Remember,2,,no,,,,,,,,,,Which CPU scheduling algorithm gives the lowest average waiting time among all non-preemptive algorithms?
-2,Short Answer,medium,Understand,2,,no,,,,,,,,,,What scheduling phenomenon occurs in First-Come First-Served (FCFS) scheduling when short processes are forced to wait behind a single long process?
-3,True/False,easy,Understand,2,,no,,,,,,,,,,"If the time quantum in a Round Robin (RR) scheduling algorithm is set extremely high, the algorithm degenerates into First-Come First-Served (FCFS)."
-4,Long Answer,medium,Apply,2,,no,,,,,,,,,,"In priority scheduling, low-priority processes may suffer from starvation. Explain how the technique of 'ageing' resolves this issue."
-5,MCQ,hard,Analyze,2,,no,,,,,,,,,,What is the primary operational trade-off when selecting a very small time quantum for a Round Robin CPU scheduler?
+q1,MCQ,easy,Remember,2,9,no,,,,,,,,,,Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?
+q2,Long Answer,hard,Analyze,2,8,no,,,,,,,,,,Explain how Round Robin scheduling avoids the convoy effect. What are the trade-offs?
+q3,True/False,medium,Understand,2,9,no,,,,,,,,,,True or False: Shortest Job First (SJF) achieves the lowest average waiting time among all non-preemptive algorithms.
+q4,Short Answer,medium,Understand,2,8,no,,,,,,,,,,How does priority scheduling prevent starvation of low-priority processes?
+q5,Long Answer,hard,Analyze,2,9,no,,,,,,,,,,Compare FCFS and SJF in terms of average waiting time and practical applicability.

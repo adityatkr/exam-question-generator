@@ -1,29 +1,30 @@
 {
-  "generated_at": "2026-11-24T20:39:45",
+  "generated_at": "2026-11-24T21:08:43",
   "app": "Exam Question Generator with Quality Check",
   "team": "Alt+F4 (PE-B65-01) - Aditya Thakur, Divyansh Vijayvargiya",
   "model": "gemini-3.5-flash-lite",
   "settings": {
     "subject": "Operating Systems",
     "difficulty": "mixed",
-    "bloom_level": "Mixed",
+    "bloom_level": "Apply",
     "num_questions": 5,
     "marks": 2,
     "question_types": [
       "MCQ",
-      "Short Answer",
       "Long Answer",
-      "True/False"
+      "True/False",
+      "Short Answer",
+      "Long Answer"
     ]
   },
   "total_marks": 10,
   "quality_threshold": 7.0,
-  "set_level_notes": "",
+  "set_level_notes": "All 5 questions meet quality threshold (avg score 8.6/10). No questions flagged for regeneration.",
   "usage": {},
   "questions": [
     {
-      "id": 1,
-      "question": "Which CPU scheduling algorithm gives the lowest average waiting time among all non-preemptive algorithms?",
+      "id": "q1",
+      "question": "Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?",
       "type": "MCQ",
       "options": [
         "First-Come First-Served (FCFS)",
@@ -31,93 +32,113 @@
         "Round Robin (RR)",
         "Priority Scheduling"
       ],
-      "answer": "Shortest Job First (SJF)",
-      "explanation": "Shortest Job First (SJF) is proven to yield the lowest average waiting time for any set of non-preemptive processes. FCFS suffers from the convoy effect, Round Robin is preemptive, and Priority scheduling does not guarantee optimal average waiting time.",
+      "answer": "First-Come First-Served (FCFS)",
+      "explanation": "FCFS is non-preemptive and allows one long process to block the entire queue, creating the convoy effect where short processes wait unnecessarily long.",
       "difficulty": "easy",
       "bloom_level": "Remember",
       "marks": 2,
-      "score": null,
-      "scores": {},
-      "issues": [],
-      "suggested_fix": "",
-      "duplicate_of": null,
-      "flagged": false
+      "score": 9,
+      "review": {
+        "clarity": 10,
+        "answer_correctness": 10,
+        "single_answer": 10,
+        "difficulty_match": 9,
+        "bloom_match": 8,
+        "source_relevance": 9,
+        "issues": [],
+        "duplicate_of": null
+      }
     },
     {
-      "id": 2,
-      "question": "What scheduling phenomenon occurs in First-Come First-Served (FCFS) scheduling when short processes are forced to wait behind a single long process?",
-      "type": "Short Answer",
-      "options": [],
-      "answer": "The convoy effect",
-      "explanation": "The convoy effect occurs in non-preemptive FCFS scheduling when multiple short processes wait in the ready queue behind one CPU-bound long process, resulting in lower CPU and device utilization.",
-      "difficulty": "medium",
-      "bloom_level": "Understand",
+      "id": "q2",
+      "question": "Explain how Round Robin scheduling avoids the convoy effect. What are the trade-offs?",
+      "type": "Long Answer",
+      "options": null,
+      "answer": "RR uses a fixed time quantum (timeslice) to preempt long processes, ensuring every process gets CPU time fairly. If the quantum is too large, RR degenerates to FCFS (no improvement); if too small, context-switch overhead becomes dominant, reducing efficiency.",
+      "explanation": "This tests understanding of how preemption and time quantums work, and the practical trade-off between fairness and overhead.",
+      "difficulty": "hard",
+      "bloom_level": "Analyze",
       "marks": 2,
-      "score": null,
-      "scores": {},
-      "issues": [],
-      "suggested_fix": "",
-      "duplicate_of": null,
-      "flagged": false
+      "score": 8,
+      "review": {
+        "clarity": 9,
+        "answer_correctness": 9,
+        "single_answer": 10,
+        "difficulty_match": 8,
+        "bloom_match": 7,
+        "source_relevance": 9,
+        "issues": [],
+        "duplicate_of": null
+      }
     },
     {
-      "id": 3,
-      "question": "If the time quantum in a Round Robin (RR) scheduling algorithm is set extremely high, the algorithm degenerates into First-Come First-Served (FCFS).",
+      "id": "q3",
+      "question": "True or False: Shortest Job First (SJF) achieves the lowest average waiting time among all non-preemptive algorithms.",
       "type": "True/False",
       "options": [
         "True",
         "False"
       ],
       "answer": "True",
-      "explanation": "When the time quantum of Round Robin becomes exceptionally large, processes complete their CPU bursts before the quantum expires, causing RR to behave exactly like FCFS.",
-      "difficulty": "easy",
+      "explanation": "SJF is proven to minimize average waiting time for non-preemptive scheduling. However, it is impractical because the next CPU burst length is not known in advance.",
+      "difficulty": "medium",
       "bloom_level": "Understand",
       "marks": 2,
-      "score": null,
-      "scores": {},
-      "issues": [],
-      "suggested_fix": "",
-      "duplicate_of": null,
-      "flagged": false
+      "score": 9,
+      "review": {
+        "clarity": 10,
+        "answer_correctness": 10,
+        "single_answer": 10,
+        "difficulty_match": 9,
+        "bloom_match": 9,
+        "source_relevance": 10,
+        "issues": [],
+        "duplicate_of": null
+      }
     },
     {
-      "id": 4,
-      "question": "In priority scheduling, low-priority processes may suffer from starvation. Explain how the technique of 'ageing' resolves this issue.",
-      "type": "Long Answer",
-      "options": [],
-      "answer": "Ageing gradually increases the priority of processes that wait in the ready queue for long periods. As a process spends more time waiting, its priority rises until it becomes high enough to gain CPU execution time, thereby preventing starvation.",
-      "explanation": "Ageing addresses indefinite blocking/starvation by making process priority a function of time spent waiting, guaranteeing that every process eventually gets executed.",
+      "id": "q4",
+      "question": "How does priority scheduling prevent starvation of low-priority processes?",
+      "type": "Short Answer",
+      "options": null,
+      "answer": "By using ageing: gradually increasing the priority of processes that have been waiting a long time.",
+      "explanation": "Ageing ensures that even low-priority processes eventually acquire high enough priority to run, preventing indefinite starvation.",
       "difficulty": "medium",
-      "bloom_level": "Apply",
+      "bloom_level": "Understand",
       "marks": 2,
-      "score": null,
-      "scores": {},
-      "issues": [],
-      "suggested_fix": "",
-      "duplicate_of": null,
-      "flagged": false
+      "score": 8,
+      "review": {
+        "clarity": 9,
+        "answer_correctness": 10,
+        "single_answer": 10,
+        "difficulty_match": 8,
+        "bloom_match": 8,
+        "source_relevance": 10,
+        "issues": [],
+        "duplicate_of": null
+      }
     },
     {
-      "id": 5,
-      "question": "What is the primary operational trade-off when selecting a very small time quantum for a Round Robin CPU scheduler?",
-      "type": "MCQ",
-      "options": [
-        "The algorithm degenerates to non-preemptive Shortest Job First.",
-        "Low-priority processes will experience complete starvation.",
-        "Context-switch overhead dominates CPU utilization.",
-        "The short-term scheduler becomes completely unnecessary."
-      ],
-      "answer": "Context-switch overhead dominates CPU utilization.",
-      "explanation": "If the time quantum is set too small, the system spends a disproportionate amount of time context switching relative to actual process execution time, degrading overall system throughput.",
+      "id": "q5",
+      "question": "Compare FCFS and SJF in terms of average waiting time and practical applicability.",
+      "type": "Long Answer",
+      "options": null,
+      "answer": "SJF achieves a lower average waiting time than FCFS because it prioritizes shorter jobs. However, FCFS is more practical because it requires no prediction of burst lengths, while SJF requires knowing future CPU burst lengths which are not available in practice.",
+      "explanation": "Tests the student's ability to weigh algorithmic optimality against practical constraints.",
       "difficulty": "hard",
       "bloom_level": "Analyze",
       "marks": 2,
-      "score": null,
-      "scores": {},
-      "issues": [],
-      "suggested_fix": "",
-      "duplicate_of": null,
-      "flagged": false
+      "score": 9,
+      "review": {
+        "clarity": 9,
+        "answer_correctness": 9,
+        "single_answer": 10,
+        "difficulty_match": 9,
+        "bloom_match": 8,
+        "source_relevance": 10,
+        "issues": [],
+        "duplicate_of": null
+      }
     }
   ]
 }
