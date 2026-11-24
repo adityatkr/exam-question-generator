@@ -64,19 +64,35 @@ def reset_paper() -> None:
 
 
 def load_sample_questions() -> bool:
-    """Load sample questions from samples/paper.json if it exists."""
-    sample_path = Path("samples/paper.json")
-    if not sample_path.exists():
-        return False
+    """Load 5 curated sample questions on CPU Scheduling."""
+    sample_data = {
+        "settings": {
+            "source_text": "CPU Scheduling. The short-term scheduler selects a process from the ready queue and allocates the CPU to it. First-Come First-Served (FCFS) is non-preemptive and suffers from the convoy effect, where short processes wait behind one long process. Shortest Job First (SJF) gives the lowest average waiting time of any non-preemptive algorithm but requires knowing the next CPU burst length, which is not available in practice. Round Robin (RR) is preemptive and assigns each process a fixed time quantum; if the quantum is too large RR degenerates to FCFS, and if it is too small the context-switch overhead dominates. Priority scheduling can cause starvation of low-priority processes, which is solved by ageing: gradually increasing the priority of processes that wait a long time.",
+            "subject": "Operating Systems",
+            "num_questions": 5,
+            "question_types": ["MCQ", "Long Answer", "True/False", "Short Answer", "Long Answer"],
+            "difficulty": "mixed",
+            "bloom_level": "Apply",
+            "marks": 2,
+            "source_kind": "notes",
+        },
+        "questions": [
+            {"id": "q1", "question": "Which CPU scheduling algorithm is non-preemptive and suffers from the convoy effect?", "type": "MCQ", "options": ["First-Come First-Served (FCFS)", "Shortest Job First (SJF)", "Round Robin (RR)", "Priority Scheduling"], "answer": "First-Come First-Served (FCFS)", "explanation": "FCFS is non-preemptive and allows one long process to block the entire queue, creating the convoy effect where short processes wait unnecessarily long.", "difficulty": "easy", "bloom_level": "Remember", "marks": 2, "score": 9, "review": {"clarity": 10, "answer_correctness": 10, "single_answer": 10, "difficulty_match": 9, "bloom_match": 8, "source_relevance": 9, "issues": [], "duplicate_of": None}, "flagged": False},
+            {"id": "q2", "question": "Explain how Round Robin scheduling avoids the convoy effect. What are the trade-offs?", "type": "Long Answer", "options": None, "answer": "RR uses a fixed time quantum (timeslice) to preempt long processes, ensuring every process gets CPU time fairly. If the quantum is too large, RR degenerates to FCFS (no improvement); if too small, context-switch overhead becomes dominant, reducing efficiency.", "explanation": "This tests understanding of how preemption and time quantums work, and the practical trade-off between fairness and overhead.", "difficulty": "hard", "bloom_level": "Analyze", "marks": 2, "score": 8, "review": {"clarity": 9, "answer_correctness": 9, "single_answer": 10, "difficulty_match": 8, "bloom_match": 7, "source_relevance": 9, "issues": [], "duplicate_of": None}, "flagged": False},
+            {"id": "q3", "question": "True or False: Shortest Job First (SJF) achieves the lowest average waiting time among all non-preemptive algorithms.", "type": "True/False", "options": ["True", "False"], "answer": "True", "explanation": "SJF is proven to minimize average waiting time for non-preemptive scheduling. However, it is impractical because the next CPU burst length is not known in advance.", "difficulty": "medium", "bloom_level": "Understand", "marks": 2, "score": 9, "review": {"clarity": 10, "answer_correctness": 10, "single_answer": 10, "difficulty_match": 9, "bloom_match": 9, "source_relevance": 10, "issues": [], "duplicate_of": None}, "flagged": False},
+            {"id": "q4", "question": "How does priority scheduling prevent starvation of low-priority processes?", "type": "Short Answer", "options": None, "answer": "By using ageing: gradually increasing the priority of processes that have been waiting a long time.", "explanation": "Ageing ensures that even low-priority processes eventually acquire high enough priority to run, preventing indefinite starvation.", "difficulty": "medium", "bloom_level": "Understand", "marks": 2, "score": 8, "review": {"clarity": 9, "answer_correctness": 10, "single_answer": 10, "difficulty_match": 8, "bloom_match": 8, "source_relevance": 10, "issues": [], "duplicate_of": None}, "flagged": False},
+            {"id": "q5", "question": "Compare FCFS and SJF in terms of average waiting time and practical applicability.", "type": "Long Answer", "options": None, "answer": "SJF achieves a lower average waiting time than FCFS because it prioritizes shorter jobs. However, FCFS is more practical because it requires no prediction of burst lengths, while SJF requires knowing future CPU burst lengths which are not available in practice.", "explanation": "Tests the student's ability to weigh algorithmic optimality against practical constraints.", "difficulty": "hard", "bloom_level": "Analyze", "marks": 2, "score": 9, "review": {"clarity": 9, "answer_correctness": 9, "single_answer": 10, "difficulty_match": 9, "bloom_match": 8, "source_relevance": 10, "issues": [], "duplicate_of": None}, "flagged": False},
+        ]
+    }
     try:
-        data = json.loads(sample_path.read_text(encoding="utf-8"))
-        st.session_state.questions = data.get("questions", [])
-        st.session_state.settings = Settings(**data.get("settings", {}))
-        st.session_state.set_notes = data.get("metadata", {}).get("notes", "")
-        st.session_state.quality_ran = data.get("metadata", {}).get("quality_checked", False)
-        st.session_state.log = ["[STARTUP] Loaded 5 sample questions from samples/paper.json"]
+        st.session_state.questions = sample_data.get("questions", [])
+        st.session_state.settings = Settings(**sample_data.get("settings", {}))
+        st.session_state.set_notes = "All 5 questions meet quality threshold (avg score 8.6/10). No questions flagged for regeneration."
+        st.session_state.quality_ran = True
+        st.session_state.log = ["[STARTUP] Loaded 5 sample questions on CPU Scheduling"]
         return True
-    except Exception:
+    except Exception as e:
+        st.error(f"Error loading samples: {e}")
         return False
 
 
