@@ -9,7 +9,9 @@ Team Alt+F4 (PE-B65-01) - SCSE4041 Prompt Engineering, Milestone 2.
 
 from __future__ import annotations
 
+import json
 from datetime import datetime
+from pathlib import Path
 
 import streamlit as st
 
@@ -59,6 +61,29 @@ def reset_paper() -> None:
     st.session_state.quality_ran = False
     st.session_state.usage = None
     st.session_state.log = []
+
+
+def load_sample_questions() -> bool:
+    """Load sample questions from samples/paper.json if it exists."""
+    sample_path = Path("samples/paper.json")
+    if not sample_path.exists():
+        return False
+    try:
+        data = json.loads(sample_path.read_text(encoding="utf-8"))
+        st.session_state.questions = data.get("questions", [])
+        st.session_state.settings = Settings(**data.get("settings", {}))
+        st.session_state.set_notes = data.get("metadata", {}).get("notes", "")
+        st.session_state.quality_ran = data.get("metadata", {}).get("quality_checked", False)
+        st.session_state.log = ["[STARTUP] Loaded 5 sample questions from samples/paper.json"]
+        return True
+    except Exception:
+        return False
+
+
+# Load samples on first visit (if no questions in session yet)
+if not st.session_state.questions and not st.session_state.get("_samples_attempted"):
+    st.session_state._samples_attempted = True
+    load_sample_questions()
 
 
 # ---------------------------------------------------------------------------
@@ -217,12 +242,27 @@ for warning in validation.warnings:
 
 st.subheader("2 · Generate")
 
-generate_clicked = st.button(
-    "Generate questions",
-    type="primary",
-    disabled=not api_key_present,
-    use_container_width=False,
-)
+col1, col2 = st.columns([1, 1])
+with col1:
+    generate_clicked = st.button(
+        "Generate questions",
+        type="primary",
+        disabled=not api_key_present,
+        use_container_width=False,
+    )
+with col2:
+    sample_clicked = st.button(
+        "Load sample questions",
+        use_container_width=False,
+        help="Load 5 curated sample questions (CPU Scheduling) with quality scores.",
+    )
+
+if sample_clicked:
+    if load_sample_questions():
+        st.success("Loaded 5 sample questions on CPU Scheduling with quality scores!", icon="✅")
+        st.rerun()
+    else:
+        st.error("Could not load sample questions.", icon="🚫")
 
 if generate_clicked:
     if not validation.ok:
